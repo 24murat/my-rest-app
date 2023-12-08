@@ -20,9 +20,19 @@ public class MovieRepository {
     private static final String UPDATE_MOVIE_SQL = "UPDATE Movie SET client_id=?, title=? WHERE id=?";
     private static final String REMOVE_MOVIE_SQL = "DELETE FROM Movie WHERE id=?";
 
+    private final DbConnection dbConnection;
+
+    public MovieRepository() {
+        dbConnection = new DbConnection();
+    }
+
+    public MovieRepository(DbConnection dbConnection) {
+        this.dbConnection = dbConnection;
+    }
+
     public List<Movie> findAll() {
         List<Movie> movieList = new ArrayList<>();
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_MOVIES_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -42,7 +52,7 @@ public class MovieRepository {
 
     public Movie findOne(int id) {
         Movie movie = new Movie();
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL)) {
 
             preparedStatement.setInt(1, id);
@@ -60,7 +70,7 @@ public class MovieRepository {
     }
 
     public Movie save(Movie movie, List<Integer> actorsId) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatementMovie = connection.prepareStatement(SAVE_MOVIE_SQL, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement preparedStatementActorMovie = connection.prepareStatement(SAVE_ACTOR_MOVIE_SQL)) {
 
@@ -92,23 +102,24 @@ public class MovieRepository {
     }
 
     public Movie update(int id, Movie updatedMovie) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MOVIE_SQL)) {
 
             connection.setAutoCommit(true);
 
             preparedStatement.setInt(1, updatedMovie.getClientId());
-            preparedStatement.setString(1, updatedMovie.getTitle());
-            preparedStatement.setInt(2, id);
+            preparedStatement.setString(2, updatedMovie.getTitle());
+            preparedStatement.setInt(3, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return findOne(id);
+        updatedMovie.setId(id);
+        return updatedMovie;
     }
 
     public boolean remove(int id) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_MOVIE_SQL)) {
 
             connection.setAutoCommit(true);

@@ -20,11 +20,10 @@ import java.util.stream.Collectors;
 // MarketServlet расширяет базовый класс HttpServlet, что позволяет ему обрабатывать HTTP-запросы.
 @WebServlet(name = "ClientServlet", value = "/clients/*")
 public class ClientServlet extends HttpServlet {
+    private static final String CONNECTION_TYPE = "application/json";
     private final ClientService service = new ClientService();
     // Объект Jackson ObjectMapper для преобразования объектов в JSON и обратно.
     private final ObjectMapper mapper = new ObjectMapper();
-
-    private static final String CONNECTION_TYPE = "application/json";
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

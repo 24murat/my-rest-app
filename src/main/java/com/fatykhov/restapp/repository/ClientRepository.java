@@ -18,9 +18,19 @@ public class ClientRepository {
     private static final String UPDATE_CLIENT_SQL = "UPDATE Client SET name=? WHERE id=?";
     private static final String REMOVE_CLIENT_SQL = "DELETE FROM Client WHERE id=?";
 
+    private final DbConnection dbConnection;
+
+    public ClientRepository() {
+        dbConnection = new DbConnection();
+    }
+
+    public ClientRepository(DbConnection dbConnection) {
+        this.dbConnection = dbConnection;
+    }
+
     public List<Client> findAll() {
         List<Client> clientList = new ArrayList<>();
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_CLIENTS_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -39,7 +49,7 @@ public class ClientRepository {
 
     public Client findOne(int id) {
         Client client = new Client();
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BY_ID_SQL)) {
 
             preparedStatement.setInt(1, id);
@@ -56,7 +66,7 @@ public class ClientRepository {
     }
 
     public Client save(Client client) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_CLIENT_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             connection.setAutoCommit(true);
@@ -79,7 +89,7 @@ public class ClientRepository {
     }
 
     public Client update(int id, Client updatedClient) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT_SQL)) {
 
             connection.setAutoCommit(true);
@@ -90,11 +100,12 @@ public class ClientRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return findOne(id);
+        updatedClient.setId(id);
+        return updatedClient;
     }
 
     public boolean remove(int id) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_CLIENT_SQL)) {
 
             connection.setAutoCommit(true);

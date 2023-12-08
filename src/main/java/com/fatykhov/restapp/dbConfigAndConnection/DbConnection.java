@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DbConnection {
-    public static Connection getConnection() {
+    public Connection getConnection() {
         DbConfig config = new DbConfig();
 
         try {

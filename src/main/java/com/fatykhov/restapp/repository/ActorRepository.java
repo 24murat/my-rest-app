@@ -18,9 +18,19 @@ public class ActorRepository {
     private static final String UPDATE_ACTOR_SQL = "UPDATE Actor SET name=? WHERE id=?";
     private static final String REMOVE_ACTOR_SQL = "DELETE FROM Actor WHERE id=?";
 
+    private final DbConnection dbConnection;
+
+    public ActorRepository() {
+        dbConnection = new DbConnection();
+    }
+
+    public ActorRepository(DbConnection dbConnection) {
+        this.dbConnection = dbConnection;
+    }
+
     public List<Actor> findAll() {
         List<Actor> actorList = new ArrayList<>();
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_ACTORS_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -39,7 +49,7 @@ public class ActorRepository {
 
     public Actor findOne(int id) {
         Actor actor = new Actor();
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ACTOR_BY_ID_SQL)) {
 
             preparedStatement.setInt(1, id);
@@ -56,7 +66,7 @@ public class ActorRepository {
     }
 
     public Actor save(Actor actor) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_ACTOR_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             connection.setAutoCommit(true);
@@ -79,21 +89,23 @@ public class ActorRepository {
     }
 
     public Actor update(int id, Actor updatedActor) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ACTOR_SQL)) {
 
             connection.setAutoCommit(true);
 
             preparedStatement.setString(1, updatedActor.getName());
             preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return findOne(id);
+        updatedActor.setId(id);
+        return updatedActor;
     }
 
     public boolean remove(int id) {
-        try (Connection connection = DbConnection.getConnection();
+        try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_ACTOR_SQL)) {
 
             connection.setAutoCommit(true);
