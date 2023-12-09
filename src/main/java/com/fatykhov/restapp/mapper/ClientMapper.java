@@ -3,7 +3,7 @@ package com.fatykhov.restapp.mapper;
 import com.fatykhov.restapp.dto.ClientDto;
 import com.fatykhov.restapp.entity.Client;
 
-public class ClientMapper implements Mapper<Client, ClientDto>{
+public class ClientMapper implements Mapper<Client, ClientDto> {
 
     @Override
     public ClientDto entityToDto(Client client) {

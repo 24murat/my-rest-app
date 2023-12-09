@@ -1,6 +1,5 @@
 package com.fatykhov.restapp.repository;
 
-
 import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
 import com.fatykhov.restapp.entity.Movie;
 
@@ -56,8 +55,8 @@ public class MovieRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL)) {
 
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
 
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 movie.setId(resultSet.getInt(1));
                 movie.setClientId(resultSet.getInt(2));
@@ -75,7 +74,6 @@ public class MovieRepository {
              PreparedStatement preparedStatementActorMovie = connection.prepareStatement(SAVE_ACTOR_MOVIE_SQL)) {
 
             connection.setAutoCommit(true);
-
             preparedStatementMovie.setInt(1, movie.getClientId());
             preparedStatementMovie.setString(2, movie.getTitle());
             preparedStatementMovie.executeUpdate();
@@ -106,7 +104,6 @@ public class MovieRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MOVIE_SQL)) {
 
             connection.setAutoCommit(true);
-
             preparedStatement.setInt(1, updatedMovie.getClientId());
             preparedStatement.setString(2, updatedMovie.getTitle());
             preparedStatement.setInt(3, id);
@@ -123,9 +120,7 @@ public class MovieRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_MOVIE_SQL)) {
 
             connection.setAutoCommit(true);
-
             preparedStatement.setInt(1, id);
-            // executeUpdate() запишет в result количество измененных строк после SQL запроса
             int result = preparedStatement.executeUpdate();
 
             return result > 0;

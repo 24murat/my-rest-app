@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,22 +39,24 @@ class ClientRepositoryTest {
     private PreparedStatement preparedStatement;
     @Mock
     private ResultSet resultSet;
-
-    private Client clientExpected;
-
     @InjectMocks
     private ClientRepository clientRepository;
+    @Spy
+    private ClientRepository spyRepository;
+
+    private Client clientExpected;
 
     @BeforeEach
     void setup() {
         clientRepository = new ClientRepository(dbConnection);
+        spyRepository = spy(clientRepository);
         clientExpected = new Client();
         clientExpected.setId(1);
-        clientExpected.setName("Test client");
+        clientExpected.setName("TestClient");
     }
 
     @Test
-    void findAllTest() throws Exception {
+    void findAllTest() {
         try {
             Field sqlField = ClientRepository.class.getDeclaredField("GET_ALL_CLIENTS_SQL");
             sqlField.setAccessible(true);
@@ -62,7 +66,7 @@ class ClientRepositoryTest {
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
-            List<Client> clientList = clientRepository.findAll();
+            List<Client> clientList = spyRepository.findAll();
 
             assertNotNull(clientList);
             verify(connection).prepareStatement(eq(getAllClientsSql));
@@ -82,11 +86,9 @@ class ClientRepositoryTest {
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
-            when(resultSet.next()).thenReturn(true);
-            when(resultSet.getInt(eq(1))).thenReturn(1);
-            when(resultSet.getString(eq(2))).thenReturn("TestClient");
+            when(spyRepository.findOne(1)).thenReturn(clientExpected);
 
-            Client client = clientRepository.findOne(1);
+            Client client = spyRepository.findOne(1);
 
             assertNotNull(client);
             assertEquals(1, client.getId());

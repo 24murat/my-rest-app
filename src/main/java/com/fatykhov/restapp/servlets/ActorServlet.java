@@ -3,7 +3,6 @@ package com.fatykhov.restapp.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fatykhov.restapp.dto.ActorDto;
 import com.fatykhov.restapp.service.ActorService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,25 +16,19 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "ActorServlet", value = "/actors/*")
 public class ActorServlet extends HttpServlet {
+    private static final String CONNECTION_TYPE = "application/json";
     private final ActorService service = new ActorService();
-    // Объект Jackson ObjectMapper для преобразования объектов в JSON и обратно.
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private static final String CONNECTION_TYPE = "application/json";
-
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
-            // Получаем список всех актеров с использованием сервиса
             List<ActorDto> allActorsDto = service.getAllActors();
-            // Преобразуем этот список в строку JSON.
             String json = mapper.writeValueAsString(allActorsDto);
-            // Устанавливаем статус ответа на 200 OK.
             resp.setStatus(HttpServletResponse.SC_OK);
-            // Записываем строку JSON в тело ответа, которая будет возвращена клиенту.
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
@@ -59,7 +52,7 @@ public class ActorServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -72,9 +65,7 @@ public class ActorServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write(jsonError);
         } else {
-            // Читаем тело POST запроса
             BufferedReader br = req.getReader();
-            // Преобразуем JSON в объект ActorDto
             ActorDto actorFromJson = mapper.readValue(readJson(br), ActorDto.class);
 
             ActorDto actorDto = service.saveActor(actorFromJson);
@@ -86,7 +77,7 @@ public class ActorServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -105,9 +96,7 @@ public class ActorServlet extends HttpServlet {
             ActorDto actorDtoCheck = service.getActorById(id);
 
             if (actorDtoCheck != null) {
-                // Читаем тело POST запроса
                 BufferedReader br = req.getReader();
-                // Преобразуем JSON в объект ActorDto
                 ActorDto actorFromJson = mapper.readValue(readJson(br), ActorDto.class);
 
                 ActorDto actorDto = service.updateActor(id, actorFromJson);
@@ -129,7 +118,7 @@ public class ActorServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -169,7 +158,7 @@ public class ActorServlet extends HttpServlet {
         }
     }
 
-    private String readJson(BufferedReader reader) throws IOException {
+    private String readJson(BufferedReader reader) {
         return reader.lines().collect(Collectors.joining());
     }
 }

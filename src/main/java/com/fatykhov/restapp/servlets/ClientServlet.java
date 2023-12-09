@@ -3,7 +3,6 @@ package com.fatykhov.restapp.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fatykhov.restapp.dto.ClientDto;
 import com.fatykhov.restapp.service.ClientService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,29 +14,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// Эта аннотация указывает контейнеру сервлетов, что класс ClientServlet является сервлетом,
-// и он должен обрабатывать запросы по пути /clients/*.
-// MarketServlet расширяет базовый класс HttpServlet, что позволяет ему обрабатывать HTTP-запросы.
 @WebServlet(name = "ClientServlet", value = "/clients/*")
 public class ClientServlet extends HttpServlet {
     private static final String CONNECTION_TYPE = "application/json";
     private final ClientService service = new ClientService();
-    // Объект Jackson ObjectMapper для преобразования объектов в JSON и обратно.
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
-            // Получаем список всех клиентов с использованием сервиса
             List<ClientDto> allClientsDto = service.getAllClients();
-            // Преобразуем этот список в строку JSON.
             String json = mapper.writeValueAsString(allClientsDto);
-            // Устанавливаем статус ответа на 200 OK.
             resp.setStatus(HttpServletResponse.SC_OK);
-            // Записываем строку JSON в тело ответа, которая будет возвращена клиенту.
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
@@ -61,7 +52,7 @@ public class ClientServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -74,9 +65,7 @@ public class ClientServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write(jsonError);
         } else {
-            // Читаем тело POST запроса
             BufferedReader br = req.getReader();
-            // Преобразуем JSON в объект ClientDto
             ClientDto clientFromJson = mapper.readValue(readJson(br), ClientDto.class);
 
             ClientDto clientDto = service.saveClient(clientFromJson);
@@ -88,7 +77,7 @@ public class ClientServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -107,9 +96,7 @@ public class ClientServlet extends HttpServlet {
             ClientDto clientDtoCheck = service.getClientById(id);
 
             if (clientDtoCheck != null) {
-                // Читаем тело POST запроса
                 BufferedReader br = req.getReader();
-                // Преобразуем JSON в объект ClientDto
                 ClientDto clientFromJson = mapper.readValue(readJson(br), ClientDto.class);
 
                 ClientDto clientDto = service.updateClient(id, clientFromJson);
@@ -131,7 +118,7 @@ public class ClientServlet extends HttpServlet {
     }
 
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -171,7 +158,7 @@ public class ClientServlet extends HttpServlet {
         }
     }
 
-    private String readJson(BufferedReader reader) throws IOException {
+    private String readJson(BufferedReader reader) {
         return reader.lines().collect(Collectors.joining());
     }
 }

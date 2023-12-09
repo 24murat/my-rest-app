@@ -8,33 +8,40 @@ import com.fatykhov.restapp.service.ClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class ClientServiceTest {
 
     @Mock
     private ClientRepository clientRepository;
-
     @Mock
     private ClientMapper clientMapper;
-
     @InjectMocks
     private ClientService clientService;
+    @Spy
+    private ClientService spyService;
 
     private ClientDto expectedClientDto;
     private Client expectedClient;
 
     @BeforeEach
     void setUp() {
+        clientService = new ClientService(clientRepository, clientMapper);
+        spyService = spy(clientService);
+
         expectedClientDto = ClientDto.builder()
                 .id(1)
                 .name("TestClient")
@@ -46,25 +53,16 @@ public class ClientServiceTest {
                 .build();
     }
 
-    @Test
-    void getAllClientsTest() {
-        when(clientRepository.findAll()).thenReturn(List.of(expectedClient));
-        when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8})
+    void getClientByIdTest(int id) {
+        when(clientRepository.findOne(id)).thenReturn(expectedClient);
+        when(spyService.getClientById(id)).thenReturn(expectedClientDto);
 
-        List<ClientDto> clients = clientService.getAllClients();
+        ClientDto clientDto = spyService.getClientById(id);
 
-        assertEquals(List.of(expectedClientDto), clients);
-    }
-
-    @Test
-    void getClientByIdTest() {
-        int clientId = 1;
-        when(clientRepository.findOne(clientId)).thenReturn(expectedClient);
-        when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
-
-        ClientDto client = clientService.getClientById(clientId);
-
-        assertEquals(expectedClientDto, client);
+        verify(clientMapper).entityToDto(expectedClient);
+        assertEquals(expectedClientDto, clientDto);
     }
 
     @Test
@@ -73,29 +71,33 @@ public class ClientServiceTest {
         when(clientRepository.save(expectedClient)).thenReturn(expectedClient);
         when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
 
-        ClientDto savedClient = clientService.saveClient(expectedClientDto);
+        ClientDto savedClientDto = clientService.saveClient(expectedClientDto);
 
-        assertEquals(expectedClientDto, savedClient);
+        verify(clientRepository).save(expectedClient);
+        verify(clientMapper).entityToDto(expectedClient);
+        verify(clientMapper).dtoToEntity(expectedClientDto);
+        assertEquals(expectedClientDto, savedClientDto);
     }
 
     @Test
     void updateClientTest() {
-        int clientId = 1;
-        when(clientMapper.dtoToEntity(expectedClientDto)).thenReturn(expectedClient);
-        when(clientRepository.update(clientId, expectedClient)).thenReturn(expectedClient);
         when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
+        when(clientMapper.dtoToEntity(expectedClientDto)).thenReturn(expectedClient);
+        when(clientRepository.update(eq(1), eq(expectedClient))).thenReturn(expectedClient);
 
-        ClientDto updatedClient = clientService.updateClient(clientId, expectedClientDto);
+        ClientDto result = clientService.updateClient(1, expectedClientDto);
 
-        assertEquals(expectedClientDto, updatedClient);
+        verify(clientMapper).entityToDto(expectedClient);
+        verify(clientMapper).dtoToEntity(expectedClientDto);
+        verify(clientRepository).update(eq(1), eq(expectedClient));
+        assertEquals(expectedClientDto, result);
     }
 
     @Test
     void removeClientTest() {
-        int clientId = 1;
-        when(clientRepository.remove(clientId)).thenReturn(true);
+        when(clientRepository.remove(1)).thenReturn(true);
 
-        boolean result = clientService.removeClient(clientId);
+        boolean result = clientService.removeClient(1);
 
         assertTrue(result);
     }

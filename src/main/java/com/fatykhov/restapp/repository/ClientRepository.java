@@ -53,8 +53,8 @@ public class ClientRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BY_ID_SQL)) {
 
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
 
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 client.setId(resultSet.getInt(1));
                 client.setName(resultSet.getString(2));
@@ -70,14 +70,13 @@ public class ClientRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_CLIENT_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             connection.setAutoCommit(true);
-
             preparedStatement.setString(1, client.getName());
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
                 int clientId = generatedKeys.getInt(1);
-                client.setId(clientId); // Обновление id у объекта client
+                client.setId(clientId);
             } else {
                 throw new SQLException("Error of obtaining the generated key for Client");
             }
@@ -93,9 +92,9 @@ public class ClientRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT_SQL)) {
 
             connection.setAutoCommit(true);
-
             preparedStatement.setString(1, updatedClient.getName());
             preparedStatement.setInt(2, id);
+
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -109,9 +108,7 @@ public class ClientRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_CLIENT_SQL)) {
 
             connection.setAutoCommit(true);
-
             preparedStatement.setInt(1, id);
-            // executeUpdate() запишет в result количество измененных строк после SQL запроса
             int result = preparedStatement.executeUpdate();
 
             return result > 0;

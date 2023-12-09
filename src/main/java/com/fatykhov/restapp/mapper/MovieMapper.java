@@ -3,7 +3,7 @@ package com.fatykhov.restapp.mapper;
 import com.fatykhov.restapp.dto.MovieDto;
 import com.fatykhov.restapp.entity.Movie;
 
-public class MovieMapper implements Mapper<Movie, MovieDto>{
+public class MovieMapper implements Mapper<Movie, MovieDto> {
 
     @Override
     public MovieDto entityToDto(Movie movie) {

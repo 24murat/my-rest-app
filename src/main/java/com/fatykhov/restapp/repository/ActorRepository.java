@@ -53,8 +53,8 @@ public class ActorRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ACTOR_BY_ID_SQL)) {
 
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
 
+            ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 actor.setId(resultSet.getInt(1));
                 actor.setName(resultSet.getString(2));
@@ -70,18 +70,17 @@ public class ActorRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_ACTOR_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             connection.setAutoCommit(true);
-
             preparedStatement.setString(1, actor.getName());
             preparedStatement.executeUpdate();
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+
             if (generatedKeys.next()) {
                 int actorId = generatedKeys.getInt(1);
-                actor.setId(actorId); // Обновление id у объекта actor
+                actor.setId(actorId);
             } else {
                 throw new SQLException("Error of obtaining the generated key for Actor");
             }
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -93,7 +92,6 @@ public class ActorRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ACTOR_SQL)) {
 
             connection.setAutoCommit(true);
-
             preparedStatement.setString(1, updatedActor.getName());
             preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
@@ -109,15 +107,11 @@ public class ActorRepository {
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_ACTOR_SQL)) {
 
             connection.setAutoCommit(true);
-
             preparedStatement.setInt(1, id);
-            // executeUpdate() запишет в result количество измененных строк после SQL запроса
             int result = preparedStatement.executeUpdate();
-
             return result > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

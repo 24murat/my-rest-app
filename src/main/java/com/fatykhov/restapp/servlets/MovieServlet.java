@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fatykhov.restapp.dto.ActorMovieDto;
 import com.fatykhov.restapp.dto.MovieDto;
 import com.fatykhov.restapp.service.MovieService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,31 +15,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-// Эта аннотация указывает контейнеру сервлетов, что класс MovieServlet является сервлетом,
-// и он должен обрабатывать запросы по пути /movies/*.
-// MarketServlet расширяет базовый класс HttpServlet, что позволяет ему обрабатывать HTTP-запросы.
 @WebServlet(name = "MovieServlet", value = "/movies/*")
 public class MovieServlet extends HttpServlet {
+    private static final String CONNECTION_TYPE = "application/json";
     private final MovieService service = new MovieService();
-    // Объект Jackson ObjectMapper для преобразования объектов в JSON и обратно.
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private static final String CONNECTION_TYPE = "application/json";
-
-    // Получает фильм по id либо получает все фильмы
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
-            // Получаем список всех клиентов с использованием сервиса
             List<MovieDto> allMoviesDto = service.getAllMovies();
-            // Преобразуем этот список в строку JSON.
             String json = mapper.writeValueAsString(allMoviesDto);
-            // Устанавливаем статус ответа на 200 OK.
             resp.setStatus(HttpServletResponse.SC_OK);
-            // Записываем строку JSON в тело ответа, которая будет возвращена клиенту.
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
@@ -63,9 +52,8 @@ public class MovieServlet extends HttpServlet {
         }
     }
 
-    // Добавляет новый фильм
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -78,9 +66,7 @@ public class MovieServlet extends HttpServlet {
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             resp.getWriter().write(jsonError);
         } else {
-            // Читаем тело POST запроса
             BufferedReader br = req.getReader();
-            // Преобразуем JSON в объект MovieDto
             ActorMovieDto actorMovieFromJson = mapper.readValue(readJson(br), ActorMovieDto.class);
 
             MovieDto movieDto = service.saveMovie(actorMovieFromJson.getMovieDto(), actorMovieFromJson.getActorsId());
@@ -91,9 +77,8 @@ public class MovieServlet extends HttpServlet {
         }
     }
 
-    // Изменяет существующий фильм с переданным id
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -112,9 +97,7 @@ public class MovieServlet extends HttpServlet {
             MovieDto movieDtoCheck = service.getMovieById(id);
 
             if (movieDtoCheck != null) {
-                // Читаем тело POST запроса
                 BufferedReader br = req.getReader();
-                // Преобразуем JSON в объект MovieDto
                 MovieDto movieFromJson = mapper.readValue(readJson(br), MovieDto.class);
 
                 MovieDto movieDto = service.updateMovie(id, movieFromJson);
@@ -134,9 +117,8 @@ public class MovieServlet extends HttpServlet {
         }
     }
 
-    // Удаляет фильм по id
     @Override
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType(CONNECTION_TYPE);
 
         String pathInfo = req.getPathInfo();
@@ -176,7 +158,7 @@ public class MovieServlet extends HttpServlet {
         }
     }
 
-    private String readJson(BufferedReader reader) throws IOException {
+    private String readJson(BufferedReader reader) {
         return reader.lines().collect(Collectors.joining());
     }
 }

@@ -8,8 +8,6 @@ public class DbConnection {
         DbConfig config = new DbConfig();
 
         try {
-            // C помощью рефлексии подгружаем класс org.postgresql.Driver и удостоверяемся в том, что
-            // этот класс загружен в нашу оперативную память.
             Class.forName(config.getDriver());
             return DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword());
         } catch (Exception e) {

@@ -17,6 +17,11 @@ public class MovieService {
         this.movieMapper = new MovieMapper();
     }
 
+    public MovieService(MovieRepository movieRepository, Mapper<Movie, MovieDto> movieMapper) {
+        this.movieRepository = movieRepository;
+        this.movieMapper = movieMapper;
+    }
+
     public List<MovieDto> getAllMovies() {
         List<Movie> movieList = movieRepository.findAll();
         return movieList.stream()
@@ -41,5 +46,4 @@ public class MovieService {
     public boolean removeMovie(int id) {
         return movieRepository.remove(id);
     }
-
 }

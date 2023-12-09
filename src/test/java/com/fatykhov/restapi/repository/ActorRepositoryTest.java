@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,18 +39,20 @@ class ActorRepositoryTest {
     private PreparedStatement preparedStatement;
     @Mock
     private ResultSet resultSet;
-
-    private Actor actorExpected;
-
     @InjectMocks
     private ActorRepository actorRepository;
+    @Spy
+    private ActorRepository spyRepository;
+
+    private Actor actorExpected;
 
     @BeforeEach
     void setup() {
         actorRepository = new ActorRepository(dbConnection);
+        spyRepository = spy(actorRepository);
         actorExpected = new Actor();
         actorExpected.setId(1);
-        actorExpected.setName("Test actor");
+        actorExpected.setName("TestActor");
     }
 
     @Test
@@ -82,11 +86,9 @@ class ActorRepositoryTest {
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
-            when(resultSet.next()).thenReturn(true);
-            when(resultSet.getInt(eq(1))).thenReturn(1);
-            when(resultSet.getString(eq(2))).thenReturn("TestActor");
+            when(spyRepository.findOne(1)).thenReturn(actorExpected);
 
-            Actor actor = actorRepository.findOne(1);
+            Actor actor = spyRepository.findOne(1);
 
             assertNotNull(actor);
             assertEquals(1, actor.getId());

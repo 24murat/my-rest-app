@@ -17,6 +17,11 @@ public class ActorService {
         this.actorMapper = new ActorMapper();
     }
 
+    public ActorService(ActorRepository actorRepository, Mapper<Actor, ActorDto> actorMapper) {
+        this.actorRepository = actorRepository;
+        this.actorMapper = actorMapper;
+    }
+
     public List<ActorDto> getAllActors() {
         List<Actor> actorList = actorRepository.findAll();
         return actorList.stream()
@@ -41,5 +46,4 @@ public class ActorService {
     public boolean removeActor(int id) {
         return actorRepository.remove(id);
     }
-
 }

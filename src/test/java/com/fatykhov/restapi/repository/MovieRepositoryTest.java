@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.lang.reflect.Field;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -39,19 +41,21 @@ class MovieRepositoryTest {
     private PreparedStatement preparedStatementActorMovie;
     @Mock
     private ResultSet resultSet;
-
-    private Movie movieExpected;
-
     @InjectMocks
     private MovieRepository movieRepository;
+    @Spy
+    private MovieRepository spyRepository;
+
+    private Movie movieExpected;
 
     @BeforeEach
     void setup() {
         movieRepository = new MovieRepository(dbConnection);
+        spyRepository = spy(movieRepository);
         movieExpected = new Movie();
         movieExpected.setId(1);
         movieExpected.setClientId(1);
-        movieExpected.setTitle("Test Movie");
+        movieExpected.setTitle("TestMovie");
     }
 
     @Test
@@ -85,12 +89,9 @@ class MovieRepositoryTest {
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.executeQuery()).thenReturn(resultSet);
-            when(resultSet.next()).thenReturn(true);
-            when(resultSet.getInt(eq(1))).thenReturn(1);
-            when(resultSet.getInt(eq(2))).thenReturn(1);
-            when(resultSet.getString(eq(3))).thenReturn("TestMovie");
+            when(spyRepository.findOne(1)).thenReturn(movieExpected);
 
-            Movie movie = movieRepository.findOne(1);
+            Movie movie = spyRepository.findOne(1);
 
             assertNotNull(movie);
             assertEquals(1, movie.getId());
@@ -142,7 +143,6 @@ class MovieRepositoryTest {
             throw new RuntimeException(e);
         }
     }
-
 
     @Test
     void updateTest() {

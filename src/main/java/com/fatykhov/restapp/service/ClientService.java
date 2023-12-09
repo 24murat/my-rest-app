@@ -17,6 +17,11 @@ public class ClientService {
         this.clientMapper = new ClientMapper();
     }
 
+    public ClientService(ClientRepository clientRepository, Mapper<Client, ClientDto> clientMapper) {
+        this.clientRepository = clientRepository;
+        this.clientMapper = clientMapper;
+    }
+
     public List<ClientDto> getAllClients() {
         List<Client> clientList = clientRepository.findAll();
         return clientList.stream()
@@ -41,5 +46,4 @@ public class ClientService {
     public boolean removeClient(int id) {
         return clientRepository.remove(id);
     }
-
 }
