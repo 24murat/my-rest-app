@@ -29,7 +29,7 @@ public class ActorService {
                 .toList();
     }
 
-    public ActorDto getActorById(int id) {
+    public ActorDto getActorById(long id) {
         return actorMapper.entityToDto(actorRepository.findOne(id));
     }
 
@@ -38,12 +38,12 @@ public class ActorService {
         return actorMapper.entityToDto(actor);
     }
 
-    public ActorDto updateActor(int id, ActorDto updatedActorDto) {
+    public ActorDto updateActor(long id, ActorDto updatedActorDto) {
         Actor actor = actorRepository.update(id, actorMapper.dtoToEntity(updatedActorDto));
         return actorMapper.entityToDto(actor);
     }
 
-    public boolean removeActor(int id) {
+    public boolean removeActor(long id) {
         return actorRepository.remove(id);
     }
 }

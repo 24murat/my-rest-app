@@ -24,32 +24,27 @@ public class ClientMapperTest {
     @BeforeEach
     void setUp() {
         expectedClientDto = ClientDto.builder()
-                .id(1)
+                .id(1L)
                 .name("TestClient")
                 .build();
 
         expectedClient = Client.builder()
-                .id(1)
+                .id(1L)
                 .name("TestClient")
                 .build();
     }
 
     @Test
     void entityToDtoTest() {
-        // Устанавливаем поведение мока
         when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
-        // Вызываем метод маппинга
         ClientDto clientDto = clientMapper.entityToDto(expectedClient);
-        // Проверяем, что маппер корректно преобразовал сущность в DTO
         assertEquals(expectedClientDto, clientDto);
     }
 
     @Test
     void dtoToEntityTest() {
         when(clientMapper.dtoToEntity(expectedClientDto)).thenReturn(expectedClient);
-        // Вызываем метод маппинга
         Client client = clientMapper.dtoToEntity(expectedClientDto);
-        // Проверяем, что маппер корректно преобразовал DTO в сущность
         assertEquals(expectedClient, client);
     }
 }

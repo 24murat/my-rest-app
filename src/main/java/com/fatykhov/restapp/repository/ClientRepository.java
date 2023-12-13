@@ -37,7 +37,7 @@ public class ClientRepository {
 
             while (resultSet.next()) {
                 Client client = new Client();
-                client.setId(resultSet.getInt(1));
+                client.setId(resultSet.getLong(1));
                 client.setName(resultSet.getString(2));
                 clientList.add(client);
             }
@@ -47,16 +47,16 @@ public class ClientRepository {
         return clientList;
     }
 
-    public Client findOne(int id) {
+    public Client findOne(long id) {
         Client client = new Client();
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BY_ID_SQL)) {
 
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                client.setId(resultSet.getInt(1));
+                client.setId(resultSet.getLong(1));
                 client.setName(resultSet.getString(2));
             }
         } catch (SQLException e) {
@@ -75,7 +75,7 @@ public class ClientRepository {
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                int clientId = generatedKeys.getInt(1);
+                long clientId = generatedKeys.getLong(1);
                 client.setId(clientId);
             } else {
                 throw new SQLException("Error of obtaining the generated key for Client");
@@ -87,13 +87,13 @@ public class ClientRepository {
         return client;
     }
 
-    public Client update(int id, Client updatedClient) {
+    public Client update(long id, Client updatedClient) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT_SQL)) {
 
             connection.setAutoCommit(true);
             preparedStatement.setString(1, updatedClient.getName());
-            preparedStatement.setInt(2, id);
+            preparedStatement.setLong(2, id);
 
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -103,12 +103,12 @@ public class ClientRepository {
         return updatedClient;
     }
 
-    public boolean remove(int id) {
+    public boolean remove(long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_CLIENT_SQL)) {
 
             connection.setAutoCommit(true);
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
             int result = preparedStatement.executeUpdate();
 
             return result > 0;

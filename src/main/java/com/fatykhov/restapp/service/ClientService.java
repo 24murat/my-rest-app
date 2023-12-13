@@ -29,7 +29,7 @@ public class ClientService {
                 .toList();
     }
 
-    public ClientDto getClientById(int id) {
+    public ClientDto getClientById(long id) {
         return clientMapper.entityToDto(clientRepository.findOne(id));
     }
 
@@ -38,12 +38,12 @@ public class ClientService {
         return clientMapper.entityToDto(client);
     }
 
-    public ClientDto updateClient(int id, ClientDto updatedClientDto) {
+    public ClientDto updateClient(long id, ClientDto updatedClientDto) {
         Client client = clientRepository.update(id, clientMapper.dtoToEntity(updatedClientDto));
         return clientMapper.entityToDto(client);
     }
 
-    public boolean removeClient(int id) {
+    public boolean removeClient(long id) {
         return clientRepository.remove(id);
     }
 }

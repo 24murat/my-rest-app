@@ -122,20 +122,20 @@ class MovieRepositoryTest {
 
             when(connection.prepareStatement(eq(saveActorMovieSql))).thenReturn(preparedStatementActorMovie);
 
-            List<Integer> actorsId = List.of(1);
+            List<Long> actorsId = List.of(1L);
 
             Movie savedMovie = movieRepository.save(movieExpected, actorsId);
 
             assertNotNull(savedMovie);
             verify(connection).prepareStatement(eq(saveMovieSql), eq(Statement.RETURN_GENERATED_KEYS));
-            verify(preparedStatementMovie).setInt(1, movieExpected.getClientId());
+            verify(preparedStatementMovie).setLong(1, movieExpected.getClientId());
             verify(preparedStatementMovie).setString(2, movieExpected.getTitle());
             verify(preparedStatementMovie).executeUpdate();
 
             verify(connection).prepareStatement(eq(saveActorMovieSql));
-            for (Integer actorId : actorsId) {
-                verify(preparedStatementActorMovie).setInt(1, actorId);
-                verify(preparedStatementActorMovie).setInt(2, savedMovie.getId());
+            for (Long actorId : actorsId) {
+                verify(preparedStatementActorMovie).setLong(1, actorId);
+                verify(preparedStatementActorMovie).setLong(2, savedMovie.getId());
                 verify(preparedStatementActorMovie).addBatch();
             }
             verify(preparedStatementActorMovie).executeBatch();
@@ -167,9 +167,9 @@ class MovieRepositoryTest {
             assertEquals("UpdatedTestMovie", result.getTitle());
             verify(connection).prepareStatement(eq(updateMovieSql));
             verify(preparedStatementMovie).executeUpdate();
-            verify(preparedStatementMovie).setInt(eq(1), eq(2));
+            verify(preparedStatementMovie).setLong(eq(1), eq(2L));
             verify(preparedStatementMovie).setString(eq(2), eq("UpdatedTestMovie"));
-            verify(preparedStatementMovie).setInt(eq(3), eq(1));
+            verify(preparedStatementMovie).setLong(eq(3), eq(1L));
         } catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -190,7 +190,7 @@ class MovieRepositoryTest {
 
             assertTrue(result);
             verify(connection).prepareStatement(eq(removeMovieSql));
-            verify(preparedStatementMovie).setInt(eq(1), eq(1));
+            verify(preparedStatementMovie).setLong(eq(1), eq(1L));
             verify(preparedStatementMovie).executeUpdate();
         } catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);

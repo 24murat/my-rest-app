@@ -67,8 +67,8 @@ public class ActorServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8})
-    void getActorByIdTest(int id) {
+    @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L})
+    void getActorByIdTest(long id) {
         when(actorRepository.findOne(id)).thenReturn(expectedActor);
         when(spyService.getActorById(id)).thenReturn(expectedActorDto);
 
@@ -96,13 +96,13 @@ public class ActorServiceTest {
     void updateActorTest() {
         when(actorMapper.entityToDto(expectedActor)).thenReturn(expectedActorDto);
         when(actorMapper.dtoToEntity(expectedActorDto)).thenReturn(expectedActor);
-        when(actorRepository.update(eq(1), eq(expectedActor))).thenReturn(expectedActor);
+        when(actorRepository.update(eq(1L), eq(expectedActor))).thenReturn(expectedActor);
 
-        ActorDto result = actorService.updateActor(1, expectedActorDto);
+        ActorDto result = actorService.updateActor(1L, expectedActorDto);
 
         verify(actorMapper).entityToDto(expectedActor);
         verify(actorMapper).dtoToEntity(expectedActorDto);
-        verify(actorRepository).update(eq(1), eq(expectedActor));
+        verify(actorRepository).update(eq(1L), eq(expectedActor));
         assertEquals(expectedActorDto, result);
     }
 

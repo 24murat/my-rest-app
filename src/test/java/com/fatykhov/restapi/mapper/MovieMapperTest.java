@@ -24,14 +24,14 @@ public class MovieMapperTest {
     @BeforeEach
     void setUp() {
         expectedMovieDto = MovieDto.builder()
-                .id(1)
-                .clientId(2)
+                .id(1L)
+                .clientId(2L)
                 .title("TestMovie")
                 .build();
 
         expectedMovie = Movie.builder()
-                .id(1)
-                .clientId(2)
+                .id(1L)
+                .clientId(2L)
                 .title("TestMovie")
                 .build();
     }

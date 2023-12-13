@@ -32,7 +32,7 @@ public class ActorServlet extends HttpServlet {
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
             ActorDto actorDto = service.getActorById(id);
 
             if (actorDto != null) {
@@ -91,7 +91,7 @@ public class ActorServlet extends HttpServlet {
             resp.getWriter().write(jsonError);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
 
             ActorDto actorDtoCheck = service.getActorById(id);
 
@@ -132,7 +132,7 @@ public class ActorServlet extends HttpServlet {
             resp.getWriter().write(jsonError);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
 
             ActorDto actorDtoCheck = service.getActorById(id);
 

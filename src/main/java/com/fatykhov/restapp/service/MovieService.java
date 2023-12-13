@@ -29,21 +29,21 @@ public class MovieService {
                 .toList();
     }
 
-    public MovieDto getMovieById(int id) {
+    public MovieDto getMovieById(long id) {
         return movieMapper.entityToDto(movieRepository.findOne(id));
     }
 
-    public MovieDto saveMovie(MovieDto movieDto, List<Integer> actorsId) {
+    public MovieDto saveMovie(MovieDto movieDto, List<Long> actorsId) {
         Movie movie = movieRepository.save(movieMapper.dtoToEntity(movieDto), actorsId);
         return movieMapper.entityToDto(movie);
     }
 
-    public MovieDto updateMovie(int id, MovieDto updatedMovieDto) {
+    public MovieDto updateMovie(long id, MovieDto updatedMovieDto) {
         Movie movie = movieRepository.update(id, movieMapper.dtoToEntity(updatedMovieDto));
         return movieMapper.entityToDto(movie);
     }
 
-    public boolean removeMovie(int id) {
+    public boolean removeMovie(long id) {
         return movieRepository.remove(id);
     }
 }

@@ -33,7 +33,7 @@ public class MovieServlet extends HttpServlet {
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
             MovieDto movieDto = service.getMovieById(id);
 
             if (movieDto != null) {
@@ -92,7 +92,7 @@ public class MovieServlet extends HttpServlet {
             resp.getWriter().write(jsonError);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
 
             MovieDto movieDtoCheck = service.getMovieById(id);
 
@@ -132,7 +132,7 @@ public class MovieServlet extends HttpServlet {
             resp.getWriter().write(jsonError);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
 
             MovieDto movieDtoCheck = service.getMovieById(id);
 

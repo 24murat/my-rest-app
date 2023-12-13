@@ -24,12 +24,12 @@ public class ActorMapperTest {
     @BeforeEach
     void setUp() {
         expectedActorDto = ActorDto.builder()
-                .id(1)
+                .id(1L)
                 .name("TestActor")
                 .build();
 
         expectedActor = Actor.builder()
-                .id(1)
+                .id(1L)
                 .name("TestActor")
                 .build();
     }

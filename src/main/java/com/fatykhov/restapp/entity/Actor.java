@@ -14,6 +14,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Actor {
-    private int id;
+    private long id;
     private String name;
 }

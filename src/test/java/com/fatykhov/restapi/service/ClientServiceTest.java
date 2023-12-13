@@ -54,8 +54,8 @@ public class ClientServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8})
-    void getClientByIdTest(int id) {
+    @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L})
+    void getClientByIdTest(long id) {
         when(clientRepository.findOne(id)).thenReturn(expectedClient);
         when(spyService.getClientById(id)).thenReturn(expectedClientDto);
 
@@ -83,21 +83,21 @@ public class ClientServiceTest {
     void updateClientTest() {
         when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
         when(clientMapper.dtoToEntity(expectedClientDto)).thenReturn(expectedClient);
-        when(clientRepository.update(eq(1), eq(expectedClient))).thenReturn(expectedClient);
+        when(clientRepository.update(eq(1L), eq(expectedClient))).thenReturn(expectedClient);
 
-        ClientDto result = clientService.updateClient(1, expectedClientDto);
+        ClientDto result = clientService.updateClient(1L, expectedClientDto);
 
         verify(clientMapper).entityToDto(expectedClient);
         verify(clientMapper).dtoToEntity(expectedClientDto);
-        verify(clientRepository).update(eq(1), eq(expectedClient));
+        verify(clientRepository).update(eq(1L), eq(expectedClient));
         assertEquals(expectedClientDto, result);
     }
 
     @Test
     void removeClientTest() {
-        when(clientRepository.remove(1)).thenReturn(true);
+        when(clientRepository.remove(1L)).thenReturn(true);
 
-        boolean result = clientService.removeClient(1);
+        boolean result = clientService.removeClient(1L);
 
         assertTrue(result);
     }

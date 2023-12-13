@@ -145,7 +145,7 @@ class ClientRepositoryTest {
             verify(connection).prepareStatement(eq(updateClientSql));
             verify(preparedStatement).executeUpdate();
             verify(preparedStatement).setString(eq(1), eq("UpdatedTestClient"));
-            verify(preparedStatement).setInt(eq(2), eq(1));
+            verify(preparedStatement).setLong(eq(2), eq(1L));
         } catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
@@ -166,7 +166,7 @@ class ClientRepositoryTest {
 
             assertTrue(result);
             verify(connection).prepareStatement(eq(removeClientSql));
-            verify(preparedStatement).setInt(eq(1), eq(1));
+            verify(preparedStatement).setLong(eq(1), eq(1L));
             verify(preparedStatement).executeUpdate();
         } catch (SQLException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException(e);

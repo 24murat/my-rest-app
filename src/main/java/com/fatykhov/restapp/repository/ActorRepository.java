@@ -37,7 +37,7 @@ public class ActorRepository {
 
             while (resultSet.next()) {
                 Actor actor = new Actor();
-                actor.setId(resultSet.getInt(1));
+                actor.setId(resultSet.getLong(1));
                 actor.setName(resultSet.getString(2));
                 actorList.add(actor);
             }
@@ -47,16 +47,16 @@ public class ActorRepository {
         return actorList;
     }
 
-    public Actor findOne(int id) {
+    public Actor findOne(long id) {
         Actor actor = new Actor();
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ACTOR_BY_ID_SQL)) {
 
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                actor.setId(resultSet.getInt(1));
+                actor.setId(resultSet.getLong(1));
                 actor.setName(resultSet.getString(2));
             }
         } catch (SQLException e) {
@@ -76,7 +76,7 @@ public class ActorRepository {
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
 
             if (generatedKeys.next()) {
-                int actorId = generatedKeys.getInt(1);
+                long actorId = generatedKeys.getLong(1);
                 actor.setId(actorId);
             } else {
                 throw new SQLException("Error of obtaining the generated key for Actor");
@@ -87,13 +87,13 @@ public class ActorRepository {
         return actor;
     }
 
-    public Actor update(int id, Actor updatedActor) {
+    public Actor update(long id, Actor updatedActor) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ACTOR_SQL)) {
 
             connection.setAutoCommit(true);
             preparedStatement.setString(1, updatedActor.getName());
-            preparedStatement.setInt(2, id);
+            preparedStatement.setLong(2, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -102,12 +102,12 @@ public class ActorRepository {
         return updatedActor;
     }
 
-    public boolean remove(int id) {
+    public boolean remove(long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_ACTOR_SQL)) {
 
             connection.setAutoCommit(true);
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
             int result = preparedStatement.executeUpdate();
             return result > 0;
         } catch (SQLException e) {

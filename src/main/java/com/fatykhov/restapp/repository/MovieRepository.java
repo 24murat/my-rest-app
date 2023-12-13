@@ -38,8 +38,8 @@ public class MovieRepository {
 
             while (resultSet.next()) {
                 Movie movie = new Movie();
-                movie.setId(resultSet.getInt(1));
-                movie.setClientId(resultSet.getInt(2));
+                movie.setId(resultSet.getLong(1));
+                movie.setClientId(resultSet.getLong(2));
                 movie.setTitle(resultSet.getString(3));
                 movieList.add(movie);
             }
@@ -49,17 +49,17 @@ public class MovieRepository {
         return movieList;
     }
 
-    public Movie findOne(int id) {
+    public Movie findOne(long id) {
         Movie movie = new Movie();
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL)) {
 
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
-                movie.setId(resultSet.getInt(1));
-                movie.setClientId(resultSet.getInt(2));
+                movie.setId(resultSet.getLong(1));
+                movie.setClientId(resultSet.getLong(2));
                 movie.setTitle(resultSet.getString(3));
             }
         } catch (SQLException e) {
@@ -68,24 +68,24 @@ public class MovieRepository {
         return movie;
     }
 
-    public Movie save(Movie movie, List<Integer> actorsId) {
+    public Movie save(Movie movie, List<Long> actorsId) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatementMovie = connection.prepareStatement(SAVE_MOVIE_SQL, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement preparedStatementActorMovie = connection.prepareStatement(SAVE_ACTOR_MOVIE_SQL)) {
 
             connection.setAutoCommit(true);
-            preparedStatementMovie.setInt(1, movie.getClientId());
+            preparedStatementMovie.setLong(1, movie.getClientId());
             preparedStatementMovie.setString(2, movie.getTitle());
             preparedStatementMovie.executeUpdate();
 
             ResultSet generatedKeys = preparedStatementMovie.getGeneratedKeys();
             if (generatedKeys.next()) {
-                int movieId = generatedKeys.getInt(1);
+                long movieId = generatedKeys.getLong(1);
                 movie.setId(movieId);
 
-                for (Integer actorId : actorsId) {
-                    preparedStatementActorMovie.setInt(1, actorId);
-                    preparedStatementActorMovie.setInt(2, movieId);
+                for (Long actorId : actorsId) {
+                    preparedStatementActorMovie.setLong(1, actorId);
+                    preparedStatementActorMovie.setLong(2, movieId);
                     preparedStatementActorMovie.addBatch();
                 }
                 preparedStatementActorMovie.executeBatch();
@@ -99,14 +99,14 @@ public class MovieRepository {
         return movie;
     }
 
-    public Movie update(int id, Movie updatedMovie) {
+    public Movie update(long id, Movie updatedMovie) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MOVIE_SQL)) {
 
             connection.setAutoCommit(true);
-            preparedStatement.setInt(1, updatedMovie.getClientId());
+            preparedStatement.setLong(1, updatedMovie.getClientId());
             preparedStatement.setString(2, updatedMovie.getTitle());
-            preparedStatement.setInt(3, id);
+            preparedStatement.setLong(3, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -115,12 +115,12 @@ public class MovieRepository {
         return updatedMovie;
     }
 
-    public boolean remove(int id) {
+    public boolean remove(long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_MOVIE_SQL)) {
 
             connection.setAutoCommit(true);
-            preparedStatement.setInt(1, id);
+            preparedStatement.setLong(1, id);
             int result = preparedStatement.executeUpdate();
 
             return result > 0;

@@ -16,6 +16,6 @@ import java.util.List;
 @Setter
 @ToString
 public class ActorMovieDto {
-    private List<Integer> actorsId;
+    private List<Long> actorsId;
     private MovieDto movieDto;
 }

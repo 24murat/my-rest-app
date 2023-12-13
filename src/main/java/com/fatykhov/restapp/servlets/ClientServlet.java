@@ -32,7 +32,7 @@ public class ClientServlet extends HttpServlet {
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
             ClientDto clientDto = service.getClientById(id);
 
             if (clientDto != null) {
@@ -91,7 +91,7 @@ public class ClientServlet extends HttpServlet {
             resp.getWriter().write(jsonError);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
 
             ClientDto clientDtoCheck = service.getClientById(id);
 
@@ -132,7 +132,7 @@ public class ClientServlet extends HttpServlet {
             resp.getWriter().write(jsonError);
         } else {
             String stringId = pathInfo.substring(1);
-            int id = Integer.parseInt(stringId);
+            long id = Long.parseLong(stringId);
 
             ClientDto clientDtoCheck = service.getClientById(id);
 

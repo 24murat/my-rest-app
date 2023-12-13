@@ -2,7 +2,6 @@ package com.fatykhov.restapi.service;
 
 import com.fatykhov.restapp.dto.MovieDto;
 import com.fatykhov.restapp.entity.Movie;
-import com.fatykhov.restapp.mapper.Mapper;
 import com.fatykhov.restapp.mapper.MovieMapper;
 import com.fatykhov.restapp.repository.MovieRepository;
 import com.fatykhov.restapp.service.MovieService;
@@ -68,8 +67,8 @@ public class MovieServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8})
-    void getMovieByIdTest(int id) {
+    @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L})
+    void getMovieByIdTest(long id) {
         when(movieRepository.findOne(id)).thenReturn(expectedMovie);
         when(spyService.getMovieById(id)).thenReturn(expectedMovieDto);
 
@@ -81,7 +80,7 @@ public class MovieServiceTest {
 
     @Test
     void saveMovieTest() {
-        List<Integer> actorsId = List.of(1);
+        List<Long> actorsId = List.of(1L);
         when(movieMapper.dtoToEntity(expectedMovieDto)).thenReturn(expectedMovie);
         when(movieRepository.save(expectedMovie, actorsId)).thenReturn(expectedMovie);
         when(movieMapper.entityToDto(expectedMovie)).thenReturn(expectedMovieDto);
@@ -98,21 +97,21 @@ public class MovieServiceTest {
     void updateMovieTest() {
         when(movieMapper.entityToDto(expectedMovie)).thenReturn(expectedMovieDto);
         when(movieMapper.dtoToEntity(expectedMovieDto)).thenReturn(expectedMovie);
-        when(movieRepository.update(eq(1), eq(expectedMovie))).thenReturn(expectedMovie);
+        when(movieRepository.update(eq(1L), eq(expectedMovie))).thenReturn(expectedMovie);
 
-        MovieDto result = spyService.updateMovie(1, expectedMovieDto);
+        MovieDto result = spyService.updateMovie(1L, expectedMovieDto);
 
         verify(movieMapper).entityToDto(expectedMovie);
         verify(movieMapper).dtoToEntity(expectedMovieDto);
-        verify(movieRepository).update(eq(1), eq(expectedMovie));
+        verify(movieRepository).update(eq(1L), eq(expectedMovie));
         assertEquals(expectedMovieDto, result);
     }
 
     @Test
     void removeMovieTest() {
-        when(movieRepository.remove(1)).thenReturn(true);
+        when(movieRepository.remove(1L)).thenReturn(true);
 
-        boolean result = spyService.removeMovie(1);
+        boolean result = spyService.removeMovie(1L);
 
         assertTrue(result);
     }
