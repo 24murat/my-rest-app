@@ -2,7 +2,7 @@ package com.fatykhov.restapp.servlets;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fatykhov.restapp.dto.ActorDto;
-import com.fatykhov.restapp.service.ActorService;
+import com.fatykhov.restapp.service.impl.ActorServiceImpl;
 import com.fatykhov.restapp.util.ServletUtils;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 @WebServlet(name = "ActorServlet", value = "/actors/*")
 public class ActorServlet extends HttpServlet {
-    private final ActorService service = new ActorService();
+    private final ActorServiceImpl service = new ActorServiceImpl();
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override

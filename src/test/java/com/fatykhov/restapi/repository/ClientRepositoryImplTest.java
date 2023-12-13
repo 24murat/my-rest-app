@@ -2,7 +2,7 @@ package com.fatykhov.restapi.repository;
 
 import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
 import com.fatykhov.restapp.entity.Client;
-import com.fatykhov.restapp.repository.ClientRepository;
+import com.fatykhov.restapp.repository.impl.ClientRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ClientRepositoryTest {
+class ClientRepositoryImplTest {
 
     @Mock
     private DbConnection dbConnection;
@@ -40,16 +40,16 @@ class ClientRepositoryTest {
     @Mock
     private ResultSet resultSet;
     @InjectMocks
-    private ClientRepository clientRepository;
+    private ClientRepositoryImpl clientRepositoryImpl;
     @Spy
-    private ClientRepository spyRepository;
+    private ClientRepositoryImpl spyRepository;
 
     private Client clientExpected;
 
     @BeforeEach
     void setup() {
-        clientRepository = new ClientRepository(dbConnection);
-        spyRepository = spy(clientRepository);
+        clientRepositoryImpl = new ClientRepositoryImpl(dbConnection);
+        spyRepository = spy(clientRepositoryImpl);
         clientExpected = new Client();
         clientExpected.setId(1L);
         clientExpected.setName("TestClient");
@@ -58,9 +58,9 @@ class ClientRepositoryTest {
     @Test
     void findAllTest() {
         try {
-            Field sqlField = ClientRepository.class.getDeclaredField("GET_ALL_CLIENTS_SQL");
+            Field sqlField = ClientRepositoryImpl.class.getDeclaredField("GET_ALL_CLIENTS_SQL");
             sqlField.setAccessible(true);
-            String getAllClientsSql = (String) sqlField.get(clientRepository);
+            String getAllClientsSql = (String) sqlField.get(clientRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -79,9 +79,9 @@ class ClientRepositoryTest {
     @Test
     void findOneTest() {
         try {
-            Field sqlField = ClientRepository.class.getDeclaredField("GET_CLIENT_BY_ID_SQL");
+            Field sqlField = ClientRepositoryImpl.class.getDeclaredField("GET_CLIENT_BY_ID_SQL");
             sqlField.setAccessible(true);
-            String getClientByIdSql = (String) sqlField.get(clientRepository);
+            String getClientByIdSql = (String) sqlField.get(clientRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -102,9 +102,9 @@ class ClientRepositoryTest {
     @Test
     void saveTest(){
         try {
-            Field sqlField = ClientRepository.class.getDeclaredField("SAVE_CLIENT_SQL");
+            Field sqlField = ClientRepositoryImpl.class.getDeclaredField("SAVE_CLIENT_SQL");
             sqlField.setAccessible(true);
-            String saveClientSql = (String) sqlField.get(clientRepository);
+            String saveClientSql = (String) sqlField.get(clientRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
@@ -112,7 +112,7 @@ class ClientRepositoryTest {
             when(preparedStatement.getGeneratedKeys()).thenReturn(resultSet);
             when(preparedStatement.getGeneratedKeys().next()).thenReturn(true);
 
-            Client savedClient = clientRepository.save(clientExpected);
+            Client savedClient = clientRepositoryImpl.save(clientExpected);
 
             assertNotNull(savedClient);
             verify(connection).prepareStatement(eq(saveClientSql), eq(Statement.RETURN_GENERATED_KEYS));
@@ -126,9 +126,9 @@ class ClientRepositoryTest {
     @Test
     void updateTest(){
         try {
-            Field sqlField = ClientRepository.class.getDeclaredField("UPDATE_CLIENT_SQL");
+            Field sqlField = ClientRepositoryImpl.class.getDeclaredField("UPDATE_CLIENT_SQL");
             sqlField.setAccessible(true);
-            String updateClientSql = (String) sqlField.get(clientRepository);
+            String updateClientSql = (String) sqlField.get(clientRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -137,7 +137,7 @@ class ClientRepositoryTest {
             updatedClient.setId(1L);
             updatedClient.setName("UpdatedTestClient");
 
-            Client result = clientRepository.update(1L, updatedClient);
+            Client result = clientRepositoryImpl.update(1L, updatedClient);
 
             assertNotNull(result);
             assertEquals(1, result.getId());
@@ -154,15 +154,15 @@ class ClientRepositoryTest {
     @Test
     void removeTest(){
         try {
-            Field sqlField = ClientRepository.class.getDeclaredField("REMOVE_CLIENT_SQL");
+            Field sqlField = ClientRepositoryImpl.class.getDeclaredField("REMOVE_CLIENT_SQL");
             sqlField.setAccessible(true);
-            String removeClientSql = (String) sqlField.get(clientRepository);
+            String removeClientSql = (String) sqlField.get(clientRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeUpdate()).thenReturn(1);
 
-            boolean result = clientRepository.remove(1L);
+            boolean result = clientRepositoryImpl.remove(1L);
 
             assertTrue(result);
             verify(connection).prepareStatement(eq(removeClientSql));

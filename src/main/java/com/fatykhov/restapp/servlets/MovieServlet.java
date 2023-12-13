@@ -3,7 +3,7 @@ package com.fatykhov.restapp.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fatykhov.restapp.dto.ActorMovieDto;
 import com.fatykhov.restapp.dto.MovieDto;
-import com.fatykhov.restapp.service.MovieService;
+import com.fatykhov.restapp.service.impl.MovieServiceImpl;
 import com.fatykhov.restapp.util.ServletUtils;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,7 +17,7 @@ import java.util.Map;
 
 @WebServlet(name = "MovieServlet", value = "/movies/*")
 public class MovieServlet extends HttpServlet {
-    private final MovieService service = new MovieService();
+    private final MovieServiceImpl service = new MovieServiceImpl();
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override

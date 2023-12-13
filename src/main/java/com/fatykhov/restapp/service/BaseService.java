@@ -1,4 +1,4 @@
-package com.fatykhov.restapp.service.interfaces;
+package com.fatykhov.restapp.service;
 
 import java.util.List;
 

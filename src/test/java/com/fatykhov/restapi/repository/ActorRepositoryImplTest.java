@@ -2,7 +2,7 @@ package com.fatykhov.restapi.repository;
 
 import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
 import com.fatykhov.restapp.entity.Actor;
-import com.fatykhov.restapp.repository.ActorRepository;
+import com.fatykhov.restapp.repository.impl.ActorRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class ActorRepositoryTest {
+class ActorRepositoryImplTest {
 
     @Mock
     private DbConnection dbConnection;
@@ -40,16 +40,16 @@ class ActorRepositoryTest {
     @Mock
     private ResultSet resultSet;
     @InjectMocks
-    private ActorRepository actorRepository;
+    private ActorRepositoryImpl actorRepositoryImpl;
     @Spy
-    private ActorRepository spyRepository;
+    private ActorRepositoryImpl spyRepository;
 
     private Actor actorExpected;
 
     @BeforeEach
     void setup() {
-        actorRepository = new ActorRepository(dbConnection);
-        spyRepository = spy(actorRepository);
+        actorRepositoryImpl = new ActorRepositoryImpl(dbConnection);
+        spyRepository = spy(actorRepositoryImpl);
         actorExpected = new Actor();
         actorExpected.setId(1L);
         actorExpected.setName("TestActor");
@@ -58,15 +58,15 @@ class ActorRepositoryTest {
     @Test
     void findAllTest() {
         try {
-            Field sqlField = ActorRepository.class.getDeclaredField("GET_ALL_ACTORS_SQL");
+            Field sqlField = ActorRepositoryImpl.class.getDeclaredField("GET_ALL_ACTORS_SQL");
             sqlField.setAccessible(true);
-            String getAllActorsSql = (String) sqlField.get(actorRepository);
+            String getAllActorsSql = (String) sqlField.get(actorRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
-            List<Actor> actorList = actorRepository.findAll();
+            List<Actor> actorList = actorRepositoryImpl.findAll();
 
             assertNotNull(actorList);
             verify(connection).prepareStatement(eq(getAllActorsSql));
@@ -79,9 +79,9 @@ class ActorRepositoryTest {
     @Test
     void findOneTest() {
         try {
-            Field sqlField = ActorRepository.class.getDeclaredField("GET_ACTOR_BY_ID_SQL");
+            Field sqlField = ActorRepositoryImpl.class.getDeclaredField("GET_ACTOR_BY_ID_SQL");
             sqlField.setAccessible(true);
-            String getActorByIdSql = (String) sqlField.get(actorRepository);
+            String getActorByIdSql = (String) sqlField.get(actorRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -102,9 +102,9 @@ class ActorRepositoryTest {
     @Test
     void saveTest(){
         try {
-            Field sqlField = ActorRepository.class.getDeclaredField("SAVE_ACTOR_SQL");
+            Field sqlField = ActorRepositoryImpl.class.getDeclaredField("SAVE_ACTOR_SQL");
             sqlField.setAccessible(true);
-            String saveActorSql = (String) sqlField.get(actorRepository);
+            String saveActorSql = (String) sqlField.get(actorRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
@@ -112,7 +112,7 @@ class ActorRepositoryTest {
             when(preparedStatement.getGeneratedKeys()).thenReturn(resultSet);
             when(preparedStatement.getGeneratedKeys().next()).thenReturn(true);
 
-            Actor savedActor = actorRepository.save(actorExpected);
+            Actor savedActor = actorRepositoryImpl.save(actorExpected);
 
             assertNotNull(savedActor);
             verify(connection).prepareStatement(eq(saveActorSql), eq(Statement.RETURN_GENERATED_KEYS));
@@ -126,9 +126,9 @@ class ActorRepositoryTest {
     @Test
     void updateTest(){
         try {
-            Field sqlField = ActorRepository.class.getDeclaredField("UPDATE_ACTOR_SQL");
+            Field sqlField = ActorRepositoryImpl.class.getDeclaredField("UPDATE_ACTOR_SQL");
             sqlField.setAccessible(true);
-            String updateActorSql = (String) sqlField.get(actorRepository);
+            String updateActorSql = (String) sqlField.get(actorRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
@@ -137,7 +137,7 @@ class ActorRepositoryTest {
             updatedActor.setId(1L);
             updatedActor.setName("UpdatedTestActor");
 
-            Actor result = actorRepository.update(1L, updatedActor);
+            Actor result = actorRepositoryImpl.update(1L, updatedActor);
 
             assertNotNull(result);
             assertEquals(1, result.getId());
@@ -154,15 +154,15 @@ class ActorRepositoryTest {
     @Test
     void removeTest(){
         try {
-            Field sqlField = ActorRepository.class.getDeclaredField("REMOVE_ACTOR_SQL");
+            Field sqlField = ActorRepositoryImpl.class.getDeclaredField("REMOVE_ACTOR_SQL");
             sqlField.setAccessible(true);
-            String removeActorSql = (String) sqlField.get(actorRepository);
+            String removeActorSql = (String) sqlField.get(actorRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeUpdate()).thenReturn(1);
 
-            boolean result = actorRepository.remove(1L);
+            boolean result = actorRepositoryImpl.remove(1L);
 
             assertTrue(result);
             verify(connection).prepareStatement(eq(removeActorSql));

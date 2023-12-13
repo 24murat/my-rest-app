@@ -2,7 +2,7 @@ package com.fatykhov.restapi.repository;
 
 import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
 import com.fatykhov.restapp.entity.Movie;
-import com.fatykhov.restapp.repository.MovieRepository;
+import com.fatykhov.restapp.repository.impl.MovieRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class MovieRepositoryTest {
+class MovieRepositoryImplTest {
 
     @Mock
     private DbConnection dbConnection;
@@ -42,16 +42,16 @@ class MovieRepositoryTest {
     @Mock
     private ResultSet resultSet;
     @InjectMocks
-    private MovieRepository movieRepository;
+    private MovieRepositoryImpl movieRepositoryImpl;
     @Spy
-    private MovieRepository spyRepository;
+    private MovieRepositoryImpl spyRepository;
 
     private Movie movieExpected;
 
     @BeforeEach
     void setup() {
-        movieRepository = new MovieRepository(dbConnection);
-        spyRepository = spy(movieRepository);
+        movieRepositoryImpl = new MovieRepositoryImpl(dbConnection);
+        spyRepository = spy(movieRepositoryImpl);
         movieExpected = new Movie();
         movieExpected.setId(1L);
         movieExpected.setClientId(1L);
@@ -61,15 +61,15 @@ class MovieRepositoryTest {
     @Test
     void findAllTest() {
         try {
-            Field sqlField = MovieRepository.class.getDeclaredField("GET_ALL_MOVIES_SQL");
+            Field sqlField = MovieRepositoryImpl.class.getDeclaredField("GET_ALL_MOVIES_SQL");
             sqlField.setAccessible(true);
-            String getAllMoviesSql = (String) sqlField.get(movieRepository);
+            String getAllMoviesSql = (String) sqlField.get(movieRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.executeQuery()).thenReturn(resultSet);
 
-            List<Movie> movieList = movieRepository.findAll();
+            List<Movie> movieList = movieRepositoryImpl.findAll();
 
             assertNotNull(movieList);
             verify(connection).prepareStatement(eq(getAllMoviesSql));
@@ -82,9 +82,9 @@ class MovieRepositoryTest {
     @Test
     void findOneTest() {
         try {
-            Field sqlField = MovieRepository.class.getDeclaredField("GET_MOVIE_BY_ID_SQL");
+            Field sqlField = MovieRepositoryImpl.class.getDeclaredField("GET_MOVIE_BY_ID_SQL");
             sqlField.setAccessible(true);
-            String getMovieByIdSql = (String) sqlField.get(movieRepository);
+            String getMovieByIdSql = (String) sqlField.get(movieRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
@@ -106,13 +106,13 @@ class MovieRepositoryTest {
     @Test
     void saveTest() {
         try {
-            Field sqlFieldMovie = MovieRepository.class.getDeclaredField("SAVE_MOVIE_SQL");
+            Field sqlFieldMovie = MovieRepositoryImpl.class.getDeclaredField("SAVE_MOVIE_SQL");
             sqlFieldMovie.setAccessible(true);
-            String saveMovieSql = (String) sqlFieldMovie.get(movieRepository);
+            String saveMovieSql = (String) sqlFieldMovie.get(movieRepositoryImpl);
 
-            Field sqlFieldActorMovie = MovieRepository.class.getDeclaredField("SAVE_ACTOR_MOVIE_SQL");
+            Field sqlFieldActorMovie = MovieRepositoryImpl.class.getDeclaredField("SAVE_ACTOR_MOVIE_SQL");
             sqlFieldActorMovie.setAccessible(true);
-            String saveActorMovieSql = (String) sqlFieldActorMovie.get(movieRepository);
+            String saveActorMovieSql = (String) sqlFieldActorMovie.get(movieRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(eq(saveMovieSql), eq(Statement.RETURN_GENERATED_KEYS)))
@@ -124,7 +124,7 @@ class MovieRepositoryTest {
 
             List<Long> actorsId = List.of(1L);
 
-            Movie savedMovie = movieRepository.save(movieExpected, actorsId);
+            Movie savedMovie = movieRepositoryImpl.save(movieExpected, actorsId);
 
             assertNotNull(savedMovie);
             verify(connection).prepareStatement(eq(saveMovieSql), eq(Statement.RETURN_GENERATED_KEYS));
@@ -147,9 +147,9 @@ class MovieRepositoryTest {
     @Test
     void updateTest() {
         try {
-            Field sqlField = MovieRepository.class.getDeclaredField("UPDATE_MOVIE_SQL");
+            Field sqlField = MovieRepositoryImpl.class.getDeclaredField("UPDATE_MOVIE_SQL");
             sqlField.setAccessible(true);
-            String updateMovieSql = (String) sqlField.get(movieRepository);
+            String updateMovieSql = (String) sqlField.get(movieRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
@@ -159,7 +159,7 @@ class MovieRepositoryTest {
             updatedMovie.setClientId(2L);
             updatedMovie.setTitle("UpdatedTestMovie");
 
-            Movie result = movieRepository.update(1L, updatedMovie);
+            Movie result = movieRepositoryImpl.update(1L, updatedMovie);
 
             assertNotNull(result);
             assertEquals(1, result.getId());
@@ -178,15 +178,15 @@ class MovieRepositoryTest {
     @Test
     void removeTest() {
         try {
-            Field sqlField = MovieRepository.class.getDeclaredField("REMOVE_MOVIE_SQL");
+            Field sqlField = MovieRepositoryImpl.class.getDeclaredField("REMOVE_MOVIE_SQL");
             sqlField.setAccessible(true);
-            String removeMovieSql = (String) sqlField.get(movieRepository);
+            String removeMovieSql = (String) sqlField.get(movieRepositoryImpl);
 
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.executeUpdate()).thenReturn(1);
 
-            boolean result = movieRepository.remove(1L);
+            boolean result = movieRepositoryImpl.remove(1L);
 
             assertTrue(result);
             verify(connection).prepareStatement(eq(removeMovieSql));

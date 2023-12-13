@@ -3,8 +3,8 @@ package com.fatykhov.restapi.service;
 import com.fatykhov.restapp.dto.ClientDto;
 import com.fatykhov.restapp.entity.Client;
 import com.fatykhov.restapp.mapper.ClientMapper;
-import com.fatykhov.restapp.repository.ClientRepository;
-import com.fatykhov.restapp.service.ClientService;
+import com.fatykhov.restapp.repository.impl.ClientRepositoryImpl;
+import com.fatykhov.restapp.service.impl.ClientServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,24 +23,24 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ClientServiceTest {
+public class ClientServiceImplTest {
 
     @Mock
-    private ClientRepository clientRepository;
+    private ClientRepositoryImpl clientRepositoryImpl;
     @Mock
     private ClientMapper clientMapper;
     @InjectMocks
-    private ClientService clientService;
+    private ClientServiceImpl clientServiceImpl;
     @Spy
-    private ClientService spyService;
+    private ClientServiceImpl spyService;
 
     private ClientDto expectedClientDto;
     private Client expectedClient;
 
     @BeforeEach
     void setUp() {
-        clientService = new ClientService(clientRepository, clientMapper);
-        spyService = spy(clientService);
+        clientServiceImpl = new ClientServiceImpl(clientRepositoryImpl, clientMapper);
+        spyService = spy(clientServiceImpl);
 
         expectedClientDto = ClientDto.builder()
                 .id(1L)
@@ -56,7 +56,7 @@ public class ClientServiceTest {
     @ParameterizedTest
     @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L})
     void getByIdTest(long id) {
-        when(clientRepository.findOne(id)).thenReturn(expectedClient);
+        when(clientRepositoryImpl.findOne(id)).thenReturn(expectedClient);
         when(spyService.getById(id)).thenReturn(expectedClientDto);
 
         ClientDto clientDto = spyService.getById(id);
@@ -68,12 +68,12 @@ public class ClientServiceTest {
     @Test
     void saveTest() {
         when(clientMapper.fromDto(expectedClientDto)).thenReturn(expectedClient);
-        when(clientRepository.save(expectedClient)).thenReturn(expectedClient);
+        when(clientRepositoryImpl.save(expectedClient)).thenReturn(expectedClient);
         when(clientMapper.toDto(expectedClient)).thenReturn(expectedClientDto);
 
-        ClientDto savedClientDto = clientService.save(expectedClientDto);
+        ClientDto savedClientDto = clientServiceImpl.save(expectedClientDto);
 
-        verify(clientRepository).save(expectedClient);
+        verify(clientRepositoryImpl).save(expectedClient);
         verify(clientMapper).toDto(expectedClient);
         verify(clientMapper).fromDto(expectedClientDto);
         assertEquals(expectedClientDto, savedClientDto);
@@ -83,21 +83,21 @@ public class ClientServiceTest {
     void updateTest() {
         when(clientMapper.toDto(expectedClient)).thenReturn(expectedClientDto);
         when(clientMapper.fromDto(expectedClientDto)).thenReturn(expectedClient);
-        when(clientRepository.update(eq(1L), eq(expectedClient))).thenReturn(expectedClient);
+        when(clientRepositoryImpl.update(eq(1L), eq(expectedClient))).thenReturn(expectedClient);
 
-        ClientDto result = clientService.update(1L, expectedClientDto);
+        ClientDto result = clientServiceImpl.update(1L, expectedClientDto);
 
         verify(clientMapper).toDto(expectedClient);
         verify(clientMapper).fromDto(expectedClientDto);
-        verify(clientRepository).update(eq(1L), eq(expectedClient));
+        verify(clientRepositoryImpl).update(eq(1L), eq(expectedClient));
         assertEquals(expectedClientDto, result);
     }
 
     @Test
     void removeTest() {
-        when(clientRepository.remove(1L)).thenReturn(true);
+        when(clientRepositoryImpl.remove(1L)).thenReturn(true);
 
-        boolean result = clientService.remove(1L);
+        boolean result = clientServiceImpl.remove(1L);
 
         assertTrue(result);
     }
