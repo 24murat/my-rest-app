@@ -69,7 +69,6 @@ public class ActorRepository {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_ACTOR_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            connection.setAutoCommit(true);
             preparedStatement.setString(1, actor.getName());
             preparedStatement.executeUpdate();
 
@@ -91,7 +90,6 @@ public class ActorRepository {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ACTOR_SQL)) {
 
-            connection.setAutoCommit(true);
             preparedStatement.setString(1, updatedActor.getName());
             preparedStatement.setLong(2, id);
             preparedStatement.executeUpdate();
@@ -106,7 +104,6 @@ public class ActorRepository {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_ACTOR_SQL)) {
 
-            connection.setAutoCommit(true);
             preparedStatement.setLong(1, id);
             int result = preparedStatement.executeUpdate();
             return result > 0;

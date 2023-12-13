@@ -73,7 +73,6 @@ public class MovieRepository {
              PreparedStatement preparedStatementMovie = connection.prepareStatement(SAVE_MOVIE_SQL, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement preparedStatementActorMovie = connection.prepareStatement(SAVE_ACTOR_MOVIE_SQL)) {
 
-            connection.setAutoCommit(true);
             preparedStatementMovie.setLong(1, movie.getClientId());
             preparedStatementMovie.setString(2, movie.getTitle());
             preparedStatementMovie.executeUpdate();
@@ -103,7 +102,6 @@ public class MovieRepository {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MOVIE_SQL)) {
 
-            connection.setAutoCommit(true);
             preparedStatement.setLong(1, updatedMovie.getClientId());
             preparedStatement.setString(2, updatedMovie.getTitle());
             preparedStatement.setLong(3, id);
@@ -119,7 +117,6 @@ public class MovieRepository {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_MOVIE_SQL)) {
 
-            connection.setAutoCommit(true);
             preparedStatement.setLong(1, id);
             int result = preparedStatement.executeUpdate();
 

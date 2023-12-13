@@ -58,11 +58,11 @@ public class ActorServiceTest {
     @Test
     void getAllActorsTest() {
         when(actorRepository.findAll()).thenReturn(List.of(expectedActor));
-        when(actorMapper.entityToDto(expectedActor)).thenReturn(expectedActorDto);
+        when(actorMapper.toDto(expectedActor)).thenReturn(expectedActorDto);
 
         List<ActorDto> actors = actorService.getAllActors();
 
-        verify(actorMapper).entityToDto(expectedActor);
+        verify(actorMapper).toDto(expectedActor);
         assertEquals(List.of(expectedActorDto), actors);
     }
 
@@ -74,34 +74,34 @@ public class ActorServiceTest {
 
         ActorDto actorDto = spyService.getActorById(id);
 
-        verify(actorMapper).entityToDto(expectedActor);
+        verify(actorMapper).toDto(expectedActor);
         assertEquals(expectedActorDto, actorDto);
     }
 
     @Test
     void saveActorTest() {
-        when(actorMapper.dtoToEntity(expectedActorDto)).thenReturn(expectedActor);
+        when(actorMapper.fromDto(expectedActorDto)).thenReturn(expectedActor);
         when(actorRepository.save(expectedActor)).thenReturn(expectedActor);
-        when(actorMapper.entityToDto(expectedActor)).thenReturn(expectedActorDto);
+        when(actorMapper.toDto(expectedActor)).thenReturn(expectedActorDto);
 
         ActorDto savedActorDto = actorService.saveActor(expectedActorDto);
 
         verify(actorRepository).save(expectedActor);
-        verify(actorMapper).entityToDto(expectedActor);
-        verify(actorMapper).dtoToEntity(expectedActorDto);
+        verify(actorMapper).toDto(expectedActor);
+        verify(actorMapper).fromDto(expectedActorDto);
         assertEquals(expectedActorDto, savedActorDto);
     }
 
     @Test
     void updateActorTest() {
-        when(actorMapper.entityToDto(expectedActor)).thenReturn(expectedActorDto);
-        when(actorMapper.dtoToEntity(expectedActorDto)).thenReturn(expectedActor);
+        when(actorMapper.toDto(expectedActor)).thenReturn(expectedActorDto);
+        when(actorMapper.fromDto(expectedActorDto)).thenReturn(expectedActor);
         when(actorRepository.update(eq(1L), eq(expectedActor))).thenReturn(expectedActor);
 
         ActorDto result = actorService.updateActor(1L, expectedActorDto);
 
-        verify(actorMapper).entityToDto(expectedActor);
-        verify(actorMapper).dtoToEntity(expectedActorDto);
+        verify(actorMapper).toDto(expectedActor);
+        verify(actorMapper).fromDto(expectedActorDto);
         verify(actorRepository).update(eq(1L), eq(expectedActor));
         assertEquals(expectedActorDto, result);
     }

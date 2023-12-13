@@ -35,16 +35,16 @@ public class ClientMapperTest {
     }
 
     @Test
-    void entityToDtoTest() {
-        when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
-        ClientDto clientDto = clientMapper.entityToDto(expectedClient);
+    void toDtoTest() {
+        when(clientMapper.toDto(expectedClient)).thenReturn(expectedClientDto);
+        ClientDto clientDto = clientMapper.toDto(expectedClient);
         assertEquals(expectedClientDto, clientDto);
     }
 
     @Test
-    void dtoToEntityTest() {
-        when(clientMapper.dtoToEntity(expectedClientDto)).thenReturn(expectedClient);
-        Client client = clientMapper.dtoToEntity(expectedClientDto);
+    void fromDtoTest() {
+        when(clientMapper.fromDto(expectedClientDto)).thenReturn(expectedClient);
+        Client client = clientMapper.fromDto(expectedClientDto);
         assertEquals(expectedClient, client);
     }
 }

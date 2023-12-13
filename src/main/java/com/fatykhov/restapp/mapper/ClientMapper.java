@@ -6,7 +6,7 @@ import com.fatykhov.restapp.entity.Client;
 public class ClientMapper implements Mapper<Client, ClientDto> {
 
     @Override
-    public ClientDto entityToDto(Client client) {
+    public ClientDto toDto(Client client) {
         return ClientDto.builder()
                 .id(client.getId())
                 .name(client.getName())
@@ -14,7 +14,7 @@ public class ClientMapper implements Mapper<Client, ClientDto> {
     }
 
     @Override
-    public Client dtoToEntity(ClientDto dto) {
+    public Client fromDto(ClientDto dto) {
         return Client.builder()
                 .id(dto.getId())
                 .name(dto.getName())

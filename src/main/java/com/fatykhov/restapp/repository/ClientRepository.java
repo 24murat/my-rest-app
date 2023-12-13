@@ -69,7 +69,6 @@ public class ClientRepository {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_CLIENT_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
-            connection.setAutoCommit(true);
             preparedStatement.setString(1, client.getName());
             preparedStatement.executeUpdate();
 
@@ -91,7 +90,6 @@ public class ClientRepository {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT_SQL)) {
 
-            connection.setAutoCommit(true);
             preparedStatement.setString(1, updatedClient.getName());
             preparedStatement.setLong(2, id);
 
@@ -107,7 +105,6 @@ public class ClientRepository {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_CLIENT_SQL)) {
 
-            connection.setAutoCommit(true);
             preparedStatement.setLong(1, id);
             int result = preparedStatement.executeUpdate();
 

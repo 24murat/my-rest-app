@@ -37,16 +37,16 @@ public class MovieMapperTest {
     }
 
     @Test
-    void entityToDtoTest() {
-        when(movieMapper.entityToDto(expectedMovie)).thenReturn(expectedMovieDto);
-        MovieDto movieDto = movieMapper.entityToDto(expectedMovie);
+    void toDtoTest() {
+        when(movieMapper.toDto(expectedMovie)).thenReturn(expectedMovieDto);
+        MovieDto movieDto = movieMapper.toDto(expectedMovie);
         assertEquals(expectedMovieDto, movieDto);
     }
 
     @Test
-    void dtoToEntityTest() {
-        when(movieMapper.dtoToEntity(expectedMovieDto)).thenReturn(expectedMovie);
-        Movie movie = movieMapper.dtoToEntity(expectedMovieDto);
+    void fromDtoTest() {
+        when(movieMapper.fromDto(expectedMovieDto)).thenReturn(expectedMovie);
+        Movie movie = movieMapper.fromDto(expectedMovieDto);
         assertEquals(expectedMovie, movie);
     }
 }

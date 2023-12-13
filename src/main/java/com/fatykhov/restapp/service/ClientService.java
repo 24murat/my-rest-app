@@ -25,22 +25,22 @@ public class ClientService {
     public List<ClientDto> getAllClients() {
         List<Client> clientList = clientRepository.findAll();
         return clientList.stream()
-                .map(clientMapper::entityToDto)
+                .map(clientMapper::toDto)
                 .toList();
     }
 
     public ClientDto getClientById(long id) {
-        return clientMapper.entityToDto(clientRepository.findOne(id));
+        return clientMapper.toDto(clientRepository.findOne(id));
     }
 
     public ClientDto saveClient(ClientDto clientDto) {
-        Client client = clientRepository.save(clientMapper.dtoToEntity(clientDto));
-        return clientMapper.entityToDto(client);
+        Client client = clientRepository.save(clientMapper.fromDto(clientDto));
+        return clientMapper.toDto(client);
     }
 
     public ClientDto updateClient(long id, ClientDto updatedClientDto) {
-        Client client = clientRepository.update(id, clientMapper.dtoToEntity(updatedClientDto));
-        return clientMapper.entityToDto(client);
+        Client client = clientRepository.update(id, clientMapper.fromDto(updatedClientDto));
+        return clientMapper.toDto(client);
     }
 
     public boolean removeClient(long id) {

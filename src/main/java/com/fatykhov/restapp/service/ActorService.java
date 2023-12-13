@@ -25,22 +25,22 @@ public class ActorService {
     public List<ActorDto> getAllActors() {
         List<Actor> actorList = actorRepository.findAll();
         return actorList.stream()
-                .map(actorMapper::entityToDto)
+                .map(actorMapper::toDto)
                 .toList();
     }
 
     public ActorDto getActorById(long id) {
-        return actorMapper.entityToDto(actorRepository.findOne(id));
+        return actorMapper.toDto(actorRepository.findOne(id));
     }
 
     public ActorDto saveActor(ActorDto actorDto) {
-        Actor actor = actorRepository.save(actorMapper.dtoToEntity(actorDto));
-        return actorMapper.entityToDto(actor);
+        Actor actor = actorRepository.save(actorMapper.fromDto(actorDto));
+        return actorMapper.toDto(actor);
     }
 
     public ActorDto updateActor(long id, ActorDto updatedActorDto) {
-        Actor actor = actorRepository.update(id, actorMapper.dtoToEntity(updatedActorDto));
-        return actorMapper.entityToDto(actor);
+        Actor actor = actorRepository.update(id, actorMapper.fromDto(updatedActorDto));
+        return actorMapper.toDto(actor);
     }
 
     public boolean removeActor(long id) {

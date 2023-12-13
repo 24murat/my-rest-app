@@ -25,22 +25,22 @@ public class MovieService {
     public List<MovieDto> getAllMovies() {
         List<Movie> movieList = movieRepository.findAll();
         return movieList.stream()
-                .map(movieMapper::entityToDto)
+                .map(movieMapper::toDto)
                 .toList();
     }
 
     public MovieDto getMovieById(long id) {
-        return movieMapper.entityToDto(movieRepository.findOne(id));
+        return movieMapper.toDto(movieRepository.findOne(id));
     }
 
     public MovieDto saveMovie(MovieDto movieDto, List<Long> actorsId) {
-        Movie movie = movieRepository.save(movieMapper.dtoToEntity(movieDto), actorsId);
-        return movieMapper.entityToDto(movie);
+        Movie movie = movieRepository.save(movieMapper.fromDto(movieDto), actorsId);
+        return movieMapper.toDto(movie);
     }
 
     public MovieDto updateMovie(long id, MovieDto updatedMovieDto) {
-        Movie movie = movieRepository.update(id, movieMapper.dtoToEntity(updatedMovieDto));
-        return movieMapper.entityToDto(movie);
+        Movie movie = movieRepository.update(id, movieMapper.fromDto(updatedMovieDto));
+        return movieMapper.toDto(movie);
     }
 
     public boolean removeMovie(long id) {

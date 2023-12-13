@@ -1,7 +1,7 @@
 package com.fatykhov.restapp.mapper;
 
 public interface Mapper<T, R> {
-    R entityToDto(T entity);
+    R toDto(T entity);
 
-    T dtoToEntity(R dto);
+    T fromDto(R dto);
 }

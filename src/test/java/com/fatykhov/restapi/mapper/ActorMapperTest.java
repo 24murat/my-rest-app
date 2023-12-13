@@ -35,16 +35,16 @@ public class ActorMapperTest {
     }
 
     @Test
-    void entityToDtoTest() {
-        when(actorMapper.entityToDto(expectedActor)).thenReturn(expectedActorDto);
-        ActorDto actorDto = actorMapper.entityToDto(expectedActor);
+    void toDto() {
+        when(actorMapper.toDto(expectedActor)).thenReturn(expectedActorDto);
+        ActorDto actorDto = actorMapper.toDto(expectedActor);
         assertEquals(expectedActorDto, actorDto);
     }
 
     @Test
-    void dtoToEntityTest() {
-        when(actorMapper.dtoToEntity(expectedActorDto)).thenReturn(expectedActor);
-        Actor actor = actorMapper.dtoToEntity(expectedActorDto);
+    void fromDtoTest() {
+        when(actorMapper.fromDto(expectedActorDto)).thenReturn(expectedActor);
+        Actor actor = actorMapper.fromDto(expectedActorDto);
         assertEquals(expectedActor, actor);
     }
 }

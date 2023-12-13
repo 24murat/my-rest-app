@@ -6,7 +6,7 @@ import com.fatykhov.restapp.entity.Actor;
 public class ActorMapper implements Mapper<Actor, ActorDto> {
 
     @Override
-    public ActorDto entityToDto(Actor actor) {
+    public ActorDto toDto(Actor actor) {
         return ActorDto.builder()
                 .id(actor.getId())
                 .name(actor.getName())
@@ -14,7 +14,7 @@ public class ActorMapper implements Mapper<Actor, ActorDto> {
     }
 
     @Override
-    public Actor dtoToEntity(ActorDto dto) {
+    public Actor fromDto(ActorDto dto) {
         return Actor.builder()
                 .id(dto.getId())
                 .name(dto.getName())

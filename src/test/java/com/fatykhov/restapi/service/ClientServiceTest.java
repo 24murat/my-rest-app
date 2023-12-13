@@ -61,34 +61,34 @@ public class ClientServiceTest {
 
         ClientDto clientDto = spyService.getClientById(id);
 
-        verify(clientMapper).entityToDto(expectedClient);
+        verify(clientMapper).toDto(expectedClient);
         assertEquals(expectedClientDto, clientDto);
     }
 
     @Test
     void saveClientTest() {
-        when(clientMapper.dtoToEntity(expectedClientDto)).thenReturn(expectedClient);
+        when(clientMapper.fromDto(expectedClientDto)).thenReturn(expectedClient);
         when(clientRepository.save(expectedClient)).thenReturn(expectedClient);
-        when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
+        when(clientMapper.toDto(expectedClient)).thenReturn(expectedClientDto);
 
         ClientDto savedClientDto = clientService.saveClient(expectedClientDto);
 
         verify(clientRepository).save(expectedClient);
-        verify(clientMapper).entityToDto(expectedClient);
-        verify(clientMapper).dtoToEntity(expectedClientDto);
+        verify(clientMapper).toDto(expectedClient);
+        verify(clientMapper).fromDto(expectedClientDto);
         assertEquals(expectedClientDto, savedClientDto);
     }
 
     @Test
     void updateClientTest() {
-        when(clientMapper.entityToDto(expectedClient)).thenReturn(expectedClientDto);
-        when(clientMapper.dtoToEntity(expectedClientDto)).thenReturn(expectedClient);
+        when(clientMapper.toDto(expectedClient)).thenReturn(expectedClientDto);
+        when(clientMapper.fromDto(expectedClientDto)).thenReturn(expectedClient);
         when(clientRepository.update(eq(1L), eq(expectedClient))).thenReturn(expectedClient);
 
         ClientDto result = clientService.updateClient(1L, expectedClientDto);
 
-        verify(clientMapper).entityToDto(expectedClient);
-        verify(clientMapper).dtoToEntity(expectedClientDto);
+        verify(clientMapper).toDto(expectedClient);
+        verify(clientMapper).fromDto(expectedClientDto);
         verify(clientRepository).update(eq(1L), eq(expectedClient));
         assertEquals(expectedClientDto, result);
     }
