@@ -3,10 +3,12 @@ package com.fatykhov.restapp.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class ResponseUtils {
+public class ServletUtils {
     private static final String CONTENT_TYPE = "application/json";
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -33,5 +35,9 @@ public class ResponseUtils {
         resp.setStatus(statusCode);
         String jsonResponse = mapper.writeValueAsString(responseObject);
         resp.getWriter().write(jsonResponse);
+    }
+
+    public static String readJson(BufferedReader reader) {
+        return reader.lines().collect(Collectors.joining());
     }
 }
