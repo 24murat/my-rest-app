@@ -56,11 +56,11 @@ public class ActorServiceTest {
     }
 
     @Test
-    void getAllActorsTest() {
+    void getAllTest() {
         when(actorRepository.findAll()).thenReturn(List.of(expectedActor));
         when(actorMapper.toDto(expectedActor)).thenReturn(expectedActorDto);
 
-        List<ActorDto> actors = actorService.getAllActors();
+        List<ActorDto> actors = actorService.getAll();
 
         verify(actorMapper).toDto(expectedActor);
         assertEquals(List.of(expectedActorDto), actors);
@@ -68,23 +68,23 @@ public class ActorServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L})
-    void getActorByIdTest(long id) {
+    void getByIdTest(long id) {
         when(actorRepository.findOne(id)).thenReturn(expectedActor);
-        when(spyService.getActorById(id)).thenReturn(expectedActorDto);
+        when(spyService.getById(id)).thenReturn(expectedActorDto);
 
-        ActorDto actorDto = spyService.getActorById(id);
+        ActorDto actorDto = spyService.getById(id);
 
         verify(actorMapper).toDto(expectedActor);
         assertEquals(expectedActorDto, actorDto);
     }
 
     @Test
-    void saveActorTest() {
+    void saveTest() {
         when(actorMapper.fromDto(expectedActorDto)).thenReturn(expectedActor);
         when(actorRepository.save(expectedActor)).thenReturn(expectedActor);
         when(actorMapper.toDto(expectedActor)).thenReturn(expectedActorDto);
 
-        ActorDto savedActorDto = actorService.saveActor(expectedActorDto);
+        ActorDto savedActorDto = actorService.save(expectedActorDto);
 
         verify(actorRepository).save(expectedActor);
         verify(actorMapper).toDto(expectedActor);
@@ -93,12 +93,12 @@ public class ActorServiceTest {
     }
 
     @Test
-    void updateActorTest() {
+    void updateTest() {
         when(actorMapper.toDto(expectedActor)).thenReturn(expectedActorDto);
         when(actorMapper.fromDto(expectedActorDto)).thenReturn(expectedActor);
         when(actorRepository.update(eq(1L), eq(expectedActor))).thenReturn(expectedActor);
 
-        ActorDto result = actorService.updateActor(1L, expectedActorDto);
+        ActorDto result = actorService.update(1L, expectedActorDto);
 
         verify(actorMapper).toDto(expectedActor);
         verify(actorMapper).fromDto(expectedActorDto);
@@ -107,10 +107,10 @@ public class ActorServiceTest {
     }
 
     @Test
-    void removeActorTest() {
+    void removeTest() {
         when(actorRepository.remove(1)).thenReturn(true);
 
-        boolean result = actorService.removeActor(1);
+        boolean result = actorService.remove(1);
 
         assertTrue(result);
     }

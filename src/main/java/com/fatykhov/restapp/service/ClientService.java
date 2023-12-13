@@ -5,10 +5,11 @@ import com.fatykhov.restapp.entity.Client;
 import com.fatykhov.restapp.mapper.ClientMapper;
 import com.fatykhov.restapp.mapper.Mapper;
 import com.fatykhov.restapp.repository.ClientRepository;
+import com.fatykhov.restapp.service.interfaces.ClientServiceInterface;
 
 import java.util.List;
 
-public class ClientService {
+public class ClientService implements ClientServiceInterface {
     private final ClientRepository clientRepository;
     private final Mapper<Client, ClientDto> clientMapper;
 
@@ -22,28 +23,32 @@ public class ClientService {
         this.clientMapper = clientMapper;
     }
 
-    public List<ClientDto> getAllClients() {
+    @Override
+    public List<ClientDto> getAll() {
         List<Client> clientList = clientRepository.findAll();
         return clientList.stream()
                 .map(clientMapper::toDto)
                 .toList();
     }
 
-    public ClientDto getClientById(long id) {
+    @Override
+    public ClientDto getById(long id) {
         return clientMapper.toDto(clientRepository.findOne(id));
     }
 
-    public ClientDto saveClient(ClientDto clientDto) {
+    public ClientDto save(ClientDto clientDto) {
         Client client = clientRepository.save(clientMapper.fromDto(clientDto));
         return clientMapper.toDto(client);
     }
 
-    public ClientDto updateClient(long id, ClientDto updatedClientDto) {
+    @Override
+    public ClientDto update(long id, ClientDto updatedClientDto) {
         Client client = clientRepository.update(id, clientMapper.fromDto(updatedClientDto));
         return clientMapper.toDto(client);
     }
 
-    public boolean removeClient(long id) {
+    @Override
+    public boolean remove(long id) {
         return clientRepository.remove(id);
     }
 }

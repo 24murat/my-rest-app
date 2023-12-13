@@ -27,14 +27,14 @@ public class MovieServlet extends HttpServlet {
 
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
-            List<MovieDto> allMoviesDto = service.getAllMovies();
+            List<MovieDto> allMoviesDto = service.getAll();
             String json = mapper.writeValueAsString(allMoviesDto);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
-            MovieDto movieDto = service.getMovieById(id);
+            MovieDto movieDto = service.getById(id);
 
             if (movieDto != null) {
                 String json = mapper.writeValueAsString(movieDto);
@@ -69,7 +69,7 @@ public class MovieServlet extends HttpServlet {
             BufferedReader br = req.getReader();
             ActorMovieDto actorMovieFromJson = mapper.readValue(readJson(br), ActorMovieDto.class);
 
-            MovieDto movieDto = service.saveMovie(actorMovieFromJson.getMovieDto(), actorMovieFromJson.getActorsId());
+            MovieDto movieDto = service.save(actorMovieFromJson.getMovieDto(), actorMovieFromJson.getActorsId());
 
             String json = mapper.writeValueAsString(movieDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -94,13 +94,13 @@ public class MovieServlet extends HttpServlet {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
 
-            MovieDto movieDtoCheck = service.getMovieById(id);
+            MovieDto movieDtoCheck = service.getById(id);
 
             if (movieDtoCheck != null) {
                 BufferedReader br = req.getReader();
                 MovieDto movieFromJson = mapper.readValue(readJson(br), MovieDto.class);
 
-                MovieDto movieDto = service.updateMovie(id, movieFromJson);
+                MovieDto movieDto = service.update(id, movieFromJson);
 
                 String json = mapper.writeValueAsString(movieDto);
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -134,10 +134,10 @@ public class MovieServlet extends HttpServlet {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
 
-            MovieDto movieDtoCheck = service.getMovieById(id);
+            MovieDto movieDtoCheck = service.getById(id);
 
             if (movieDtoCheck != null) {
-                boolean isDeleted = service.removeMovie(id);
+                boolean isDeleted = service.remove(id);
 
                 Map<String, Object> messageMap = Map.of(
                         "status", HttpServletResponse.SC_OK,

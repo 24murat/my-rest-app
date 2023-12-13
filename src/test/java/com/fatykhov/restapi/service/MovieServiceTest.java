@@ -56,11 +56,11 @@ public class MovieServiceTest {
     }
 
     @Test
-    void getAllMoviesTest() {
+    void getAllTest() {
         when(movieRepository.findAll()).thenReturn(List.of(expectedMovie));
         when(movieMapper.toDto(expectedMovie)).thenReturn(expectedMovieDto);
 
-        List<MovieDto> movies = spyService.getAllMovies();
+        List<MovieDto> movies = spyService.getAll();
 
         verify(movieMapper).toDto(expectedMovie);
         assertEquals(List.of(expectedMovieDto), movies);
@@ -68,24 +68,24 @@ public class MovieServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L})
-    void getMovieByIdTest(long id) {
+    void getByIdTest(long id) {
         when(movieRepository.findOne(id)).thenReturn(expectedMovie);
-        when(spyService.getMovieById(id)).thenReturn(expectedMovieDto);
+        when(spyService.getById(id)).thenReturn(expectedMovieDto);
 
-        MovieDto movieDto = spyService.getMovieById(id);
+        MovieDto movieDto = spyService.getById(id);
 
         verify(movieMapper).toDto(expectedMovie);
         assertEquals(expectedMovieDto, movieDto);
     }
 
     @Test
-    void saveMovieTest() {
+    void saveTest() {
         List<Long> actorsId = List.of(1L);
         when(movieMapper.fromDto(expectedMovieDto)).thenReturn(expectedMovie);
         when(movieRepository.save(expectedMovie, actorsId)).thenReturn(expectedMovie);
         when(movieMapper.toDto(expectedMovie)).thenReturn(expectedMovieDto);
 
-        MovieDto savedMovieDto = spyService.saveMovie(expectedMovieDto, actorsId);
+        MovieDto savedMovieDto = spyService.save(expectedMovieDto, actorsId);
 
         verify(movieRepository).save(expectedMovie, actorsId);
         verify(movieMapper).toDto(expectedMovie);
@@ -94,12 +94,12 @@ public class MovieServiceTest {
     }
 
     @Test
-    void updateMovieTest() {
+    void updateTest() {
         when(movieMapper.toDto(expectedMovie)).thenReturn(expectedMovieDto);
         when(movieMapper.fromDto(expectedMovieDto)).thenReturn(expectedMovie);
         when(movieRepository.update(eq(1L), eq(expectedMovie))).thenReturn(expectedMovie);
 
-        MovieDto result = spyService.updateMovie(1L, expectedMovieDto);
+        MovieDto result = spyService.update(1L, expectedMovieDto);
 
         verify(movieMapper).toDto(expectedMovie);
         verify(movieMapper).fromDto(expectedMovieDto);
@@ -108,10 +108,10 @@ public class MovieServiceTest {
     }
 
     @Test
-    void removeMovieTest() {
+    void removeTest() {
         when(movieRepository.remove(1L)).thenReturn(true);
 
-        boolean result = spyService.removeMovie(1L);
+        boolean result = spyService.remove(1L);
 
         assertTrue(result);
     }

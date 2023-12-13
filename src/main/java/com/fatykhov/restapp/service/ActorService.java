@@ -5,10 +5,11 @@ import com.fatykhov.restapp.entity.Actor;
 import com.fatykhov.restapp.mapper.ActorMapper;
 import com.fatykhov.restapp.mapper.Mapper;
 import com.fatykhov.restapp.repository.ActorRepository;
+import com.fatykhov.restapp.service.interfaces.ActorServiceInterface;
 
 import java.util.List;
 
-public class ActorService {
+public class ActorService implements ActorServiceInterface {
     private final ActorRepository actorRepository;
     private final Mapper<Actor, ActorDto> actorMapper;
 
@@ -22,28 +23,32 @@ public class ActorService {
         this.actorMapper = actorMapper;
     }
 
-    public List<ActorDto> getAllActors() {
+    @Override
+    public List<ActorDto> getAll() {
         List<Actor> actorList = actorRepository.findAll();
         return actorList.stream()
                 .map(actorMapper::toDto)
                 .toList();
     }
 
-    public ActorDto getActorById(long id) {
+    @Override
+    public ActorDto getById(long id) {
         return actorMapper.toDto(actorRepository.findOne(id));
     }
 
-    public ActorDto saveActor(ActorDto actorDto) {
+    public ActorDto save(ActorDto actorDto) {
         Actor actor = actorRepository.save(actorMapper.fromDto(actorDto));
         return actorMapper.toDto(actor);
     }
 
-    public ActorDto updateActor(long id, ActorDto updatedActorDto) {
+    @Override
+    public ActorDto update(long id, ActorDto updatedActorDto) {
         Actor actor = actorRepository.update(id, actorMapper.fromDto(updatedActorDto));
         return actorMapper.toDto(actor);
     }
 
-    public boolean removeActor(long id) {
+    @Override
+    public boolean remove(long id) {
         return actorRepository.remove(id);
     }
 }

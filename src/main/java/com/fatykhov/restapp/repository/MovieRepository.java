@@ -2,6 +2,7 @@ package com.fatykhov.restapp.repository;
 
 import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
 import com.fatykhov.restapp.entity.Movie;
+import com.fatykhov.restapp.repository.interfaces.MovieRepositoryInterface;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieRepository {
+public class MovieRepository implements MovieRepositoryInterface {
     private static final String GET_ALL_MOVIES_SQL = "SELECT * FROM Movie";
     private static final String GET_MOVIE_BY_ID_SQL = "SELECT * FROM Movie WHERE id = ?";
     private static final String SAVE_MOVIE_SQL = "INSERT INTO Movie(client_id, title) VALUES (?, ?)";
@@ -29,6 +30,7 @@ public class MovieRepository {
         this.dbConnection = dbConnection;
     }
 
+    @Override
     public List<Movie> findAll() {
         List<Movie> movieList = new ArrayList<>();
         try (Connection connection = dbConnection.getConnection();
@@ -49,6 +51,7 @@ public class MovieRepository {
         return movieList;
     }
 
+    @Override
     public Movie findOne(long id) {
         Movie movie = new Movie();
         try (Connection connection = dbConnection.getConnection();
@@ -98,6 +101,7 @@ public class MovieRepository {
         return movie;
     }
 
+    @Override
     public Movie update(long id, Movie updatedMovie) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MOVIE_SQL)) {
@@ -113,6 +117,7 @@ public class MovieRepository {
         return updatedMovie;
     }
 
+    @Override
     public boolean remove(long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_MOVIE_SQL)) {

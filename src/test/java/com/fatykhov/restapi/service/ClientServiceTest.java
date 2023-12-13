@@ -55,23 +55,23 @@ public class ClientServiceTest {
 
     @ParameterizedTest
     @ValueSource(longs = {1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L})
-    void getClientByIdTest(long id) {
+    void getByIdTest(long id) {
         when(clientRepository.findOne(id)).thenReturn(expectedClient);
-        when(spyService.getClientById(id)).thenReturn(expectedClientDto);
+        when(spyService.getById(id)).thenReturn(expectedClientDto);
 
-        ClientDto clientDto = spyService.getClientById(id);
+        ClientDto clientDto = spyService.getById(id);
 
         verify(clientMapper).toDto(expectedClient);
         assertEquals(expectedClientDto, clientDto);
     }
 
     @Test
-    void saveClientTest() {
+    void saveTest() {
         when(clientMapper.fromDto(expectedClientDto)).thenReturn(expectedClient);
         when(clientRepository.save(expectedClient)).thenReturn(expectedClient);
         when(clientMapper.toDto(expectedClient)).thenReturn(expectedClientDto);
 
-        ClientDto savedClientDto = clientService.saveClient(expectedClientDto);
+        ClientDto savedClientDto = clientService.save(expectedClientDto);
 
         verify(clientRepository).save(expectedClient);
         verify(clientMapper).toDto(expectedClient);
@@ -80,12 +80,12 @@ public class ClientServiceTest {
     }
 
     @Test
-    void updateClientTest() {
+    void updateTest() {
         when(clientMapper.toDto(expectedClient)).thenReturn(expectedClientDto);
         when(clientMapper.fromDto(expectedClientDto)).thenReturn(expectedClient);
         when(clientRepository.update(eq(1L), eq(expectedClient))).thenReturn(expectedClient);
 
-        ClientDto result = clientService.updateClient(1L, expectedClientDto);
+        ClientDto result = clientService.update(1L, expectedClientDto);
 
         verify(clientMapper).toDto(expectedClient);
         verify(clientMapper).fromDto(expectedClientDto);
@@ -94,10 +94,10 @@ public class ClientServiceTest {
     }
 
     @Test
-    void removeClientTest() {
+    void removeTest() {
         when(clientRepository.remove(1L)).thenReturn(true);
 
-        boolean result = clientService.removeClient(1L);
+        boolean result = clientService.remove(1L);
 
         assertTrue(result);
     }

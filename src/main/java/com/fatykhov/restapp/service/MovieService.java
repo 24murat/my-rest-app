@@ -5,10 +5,11 @@ import com.fatykhov.restapp.entity.Movie;
 import com.fatykhov.restapp.mapper.Mapper;
 import com.fatykhov.restapp.mapper.MovieMapper;
 import com.fatykhov.restapp.repository.MovieRepository;
+import com.fatykhov.restapp.service.interfaces.MovieServiceInterface;
 
 import java.util.List;
 
-public class MovieService {
+public class MovieService implements MovieServiceInterface {
     private final MovieRepository movieRepository;
     private final Mapper<Movie, MovieDto> movieMapper;
 
@@ -22,28 +23,32 @@ public class MovieService {
         this.movieMapper = movieMapper;
     }
 
-    public List<MovieDto> getAllMovies() {
+    @Override
+    public List<MovieDto> getAll() {
         List<Movie> movieList = movieRepository.findAll();
         return movieList.stream()
                 .map(movieMapper::toDto)
                 .toList();
     }
 
-    public MovieDto getMovieById(long id) {
+    @Override
+    public MovieDto getById(long id) {
         return movieMapper.toDto(movieRepository.findOne(id));
     }
 
-    public MovieDto saveMovie(MovieDto movieDto, List<Long> actorsId) {
+    public MovieDto save(MovieDto movieDto, List<Long> actorsId) {
         Movie movie = movieRepository.save(movieMapper.fromDto(movieDto), actorsId);
         return movieMapper.toDto(movie);
     }
 
-    public MovieDto updateMovie(long id, MovieDto updatedMovieDto) {
+    @Override
+    public MovieDto update(long id, MovieDto updatedMovieDto) {
         Movie movie = movieRepository.update(id, movieMapper.fromDto(updatedMovieDto));
         return movieMapper.toDto(movie);
     }
 
-    public boolean removeMovie(long id) {
+    @Override
+    public boolean remove(long id) {
         return movieRepository.remove(id);
     }
 }

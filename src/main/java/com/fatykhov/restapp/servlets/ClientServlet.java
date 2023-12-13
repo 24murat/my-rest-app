@@ -26,14 +26,14 @@ public class ClientServlet extends HttpServlet {
 
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
-            List<ClientDto> allClientsDto = service.getAllClients();
+            List<ClientDto> allClientsDto = service.getAll();
             String json = mapper.writeValueAsString(allClientsDto);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
-            ClientDto clientDto = service.getClientById(id);
+            ClientDto clientDto = service.getById(id);
 
             if (clientDto != null) {
                 String json = mapper.writeValueAsString(clientDto);
@@ -68,7 +68,7 @@ public class ClientServlet extends HttpServlet {
             BufferedReader br = req.getReader();
             ClientDto clientFromJson = mapper.readValue(readJson(br), ClientDto.class);
 
-            ClientDto clientDto = service.saveClient(clientFromJson);
+            ClientDto clientDto = service.save(clientFromJson);
 
             String json = mapper.writeValueAsString(clientDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -93,13 +93,13 @@ public class ClientServlet extends HttpServlet {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
 
-            ClientDto clientDtoCheck = service.getClientById(id);
+            ClientDto clientDtoCheck = service.getById(id);
 
             if (clientDtoCheck != null) {
                 BufferedReader br = req.getReader();
                 ClientDto clientFromJson = mapper.readValue(readJson(br), ClientDto.class);
 
-                ClientDto clientDto = service.updateClient(id, clientFromJson);
+                ClientDto clientDto = service.update(id, clientFromJson);
 
                 String json = mapper.writeValueAsString(clientDto);
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -134,10 +134,10 @@ public class ClientServlet extends HttpServlet {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
 
-            ClientDto clientDtoCheck = service.getClientById(id);
+            ClientDto clientDtoCheck = service.getById(id);
 
             if (clientDtoCheck != null) {
-                boolean isDeleted = service.removeClient(id);
+                boolean isDeleted = service.remove(id);
 
                 Map<String, Object> messageMap = Map.of(
                         "status", HttpServletResponse.SC_OK,

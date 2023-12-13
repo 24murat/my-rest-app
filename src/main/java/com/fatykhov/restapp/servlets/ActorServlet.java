@@ -26,14 +26,14 @@ public class ActorServlet extends HttpServlet {
 
         String pathInfo = req.getPathInfo();
         if (pathInfo == null) {
-            List<ActorDto> allActorsDto = service.getAllActors();
+            List<ActorDto> allActorsDto = service.getAll();
             String json = mapper.writeValueAsString(allActorsDto);
             resp.setStatus(HttpServletResponse.SC_OK);
             resp.getWriter().write(json);
         } else {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
-            ActorDto actorDto = service.getActorById(id);
+            ActorDto actorDto = service.getById(id);
 
             if (actorDto != null) {
                 String json = mapper.writeValueAsString(actorDto);
@@ -68,7 +68,7 @@ public class ActorServlet extends HttpServlet {
             BufferedReader br = req.getReader();
             ActorDto actorFromJson = mapper.readValue(readJson(br), ActorDto.class);
 
-            ActorDto actorDto = service.saveActor(actorFromJson);
+            ActorDto actorDto = service.save(actorFromJson);
 
             String json = mapper.writeValueAsString(actorDto);
             resp.setStatus(HttpServletResponse.SC_CREATED);
@@ -93,13 +93,13 @@ public class ActorServlet extends HttpServlet {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
 
-            ActorDto actorDtoCheck = service.getActorById(id);
+            ActorDto actorDtoCheck = service.getById(id);
 
             if (actorDtoCheck != null) {
                 BufferedReader br = req.getReader();
                 ActorDto actorFromJson = mapper.readValue(readJson(br), ActorDto.class);
 
-                ActorDto actorDto = service.updateActor(id, actorFromJson);
+                ActorDto actorDto = service.update(id, actorFromJson);
 
                 String json = mapper.writeValueAsString(actorDto);
                 resp.setStatus(HttpServletResponse.SC_OK);
@@ -134,10 +134,10 @@ public class ActorServlet extends HttpServlet {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
 
-            ActorDto actorDtoCheck = service.getActorById(id);
+            ActorDto actorDtoCheck = service.getById(id);
 
             if (actorDtoCheck != null) {
-                boolean isDeleted = service.removeActor(id);
+                boolean isDeleted = service.remove(id);
 
                 Map<String, Object> messageMap = Map.of(
                         "status", HttpServletResponse.SC_OK,

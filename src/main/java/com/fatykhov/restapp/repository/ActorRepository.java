@@ -2,6 +2,7 @@ package com.fatykhov.restapp.repository;
 
 import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
 import com.fatykhov.restapp.entity.Actor;
+import com.fatykhov.restapp.repository.interfaces.ActorRepositoryInterface;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActorRepository {
+public class ActorRepository implements ActorRepositoryInterface {
     private static final String GET_ALL_ACTORS_SQL = "SELECT * FROM Actor";
     private static final String GET_ACTOR_BY_ID_SQL = "SELECT * FROM Actor WHERE id = ?";
     private static final String SAVE_ACTOR_SQL = "INSERT INTO Actor(name) VALUES (?)";
@@ -28,6 +29,7 @@ public class ActorRepository {
         this.dbConnection = dbConnection;
     }
 
+    @Override
     public List<Actor> findAll() {
         List<Actor> actorList = new ArrayList<>();
         try (Connection connection = dbConnection.getConnection();
@@ -47,6 +49,7 @@ public class ActorRepository {
         return actorList;
     }
 
+    @Override
     public Actor findOne(long id) {
         Actor actor = new Actor();
         try (Connection connection = dbConnection.getConnection();
@@ -86,6 +89,7 @@ public class ActorRepository {
         return actor;
     }
 
+    @Override
     public Actor update(long id, Actor updatedActor) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ACTOR_SQL)) {
@@ -100,6 +104,7 @@ public class ActorRepository {
         return updatedActor;
     }
 
+    @Override
     public boolean remove(long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_ACTOR_SQL)) {

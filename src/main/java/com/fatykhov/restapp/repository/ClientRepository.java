@@ -2,6 +2,7 @@ package com.fatykhov.restapp.repository;
 
 import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
 import com.fatykhov.restapp.entity.Client;
+import com.fatykhov.restapp.repository.interfaces.ClientRepositoryInterface;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +12,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientRepository {
+public class ClientRepository implements ClientRepositoryInterface {
     private static final String GET_ALL_CLIENTS_SQL = "SELECT * FROM Client";
     private static final String GET_CLIENT_BY_ID_SQL = "SELECT * FROM Client WHERE id = ?";
     private static final String SAVE_CLIENT_SQL = "INSERT INTO Client(name) VALUES (?)";
@@ -28,6 +29,7 @@ public class ClientRepository {
         this.dbConnection = dbConnection;
     }
 
+    @Override
     public List<Client> findAll() {
         List<Client> clientList = new ArrayList<>();
         try (Connection connection = dbConnection.getConnection();
@@ -47,6 +49,7 @@ public class ClientRepository {
         return clientList;
     }
 
+    @Override
     public Client findOne(long id) {
         Client client = new Client();
         try (Connection connection = dbConnection.getConnection();
@@ -86,6 +89,7 @@ public class ClientRepository {
         return client;
     }
 
+    @Override
     public Client update(long id, Client updatedClient) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT_SQL)) {
@@ -101,6 +105,7 @@ public class ClientRepository {
         return updatedClient;
     }
 
+    @Override
     public boolean remove(long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_CLIENT_SQL)) {
