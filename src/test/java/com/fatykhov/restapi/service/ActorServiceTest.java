@@ -45,12 +45,12 @@ public class ActorServiceTest {
         spyService = spy(actorService);
 
         expectedActorDto = ActorDto.builder()
-                .id(1)
+                .id(1L)
                 .name("TestActor")
                 .build();
 
         expectedActor = Actor.builder()
-                .id(1)
+                .id(1L)
                 .name("TestActor")
                 .build();
     }
@@ -108,9 +108,9 @@ public class ActorServiceTest {
 
     @Test
     void removeTest() {
-        when(actorRepository.remove(1)).thenReturn(true);
+        when(actorRepository.remove(1L)).thenReturn(true);
 
-        boolean result = actorService.remove(1);
+        boolean result = actorService.remove(1L);
 
         assertTrue(result);
     }

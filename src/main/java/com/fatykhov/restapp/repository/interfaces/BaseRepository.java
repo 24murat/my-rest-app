@@ -5,9 +5,9 @@ import java.util.List;
 public interface BaseRepository<T> {
     List<T> findAll();
 
-    T findOne(long id);
+    T findOne(Long id);
 
-    T update(long id, T updatedElement);
+    T update(Long id, T updatedElement);
 
-    boolean remove(long id);
+    boolean remove(Long id);
 }

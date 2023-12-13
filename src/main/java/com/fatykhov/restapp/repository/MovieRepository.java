@@ -52,7 +52,7 @@ public class MovieRepository implements MovieRepositoryInterface {
     }
 
     @Override
-    public Movie findOne(long id) {
+    public Movie findOne(Long id) {
         Movie movie = new Movie();
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL)) {
@@ -82,7 +82,7 @@ public class MovieRepository implements MovieRepositoryInterface {
 
             ResultSet generatedKeys = preparedStatementMovie.getGeneratedKeys();
             if (generatedKeys.next()) {
-                long movieId = generatedKeys.getLong(1);
+                Long movieId = generatedKeys.getLong(1);
                 movie.setId(movieId);
 
                 for (Long actorId : actorsId) {
@@ -102,7 +102,7 @@ public class MovieRepository implements MovieRepositoryInterface {
     }
 
     @Override
-    public Movie update(long id, Movie updatedMovie) {
+    public Movie update(Long id, Movie updatedMovie) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MOVIE_SQL)) {
 
@@ -118,7 +118,7 @@ public class MovieRepository implements MovieRepositoryInterface {
     }
 
     @Override
-    public boolean remove(long id) {
+    public boolean remove(Long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_MOVIE_SQL)) {
 

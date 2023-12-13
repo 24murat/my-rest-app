@@ -45,12 +45,12 @@ public class MovieServiceTest {
         spyService = spy(movieService);
 
         expectedMovieDto = MovieDto.builder()
-                .id(1)
+                .id(1L)
                 .title("TestMovie")
                 .build();
 
         expectedMovie = Movie.builder()
-                .id(1)
+                .id(1L)
                 .title("TestMovie")
                 .build();
     }

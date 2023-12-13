@@ -53,8 +53,8 @@ class MovieRepositoryTest {
         movieRepository = new MovieRepository(dbConnection);
         spyRepository = spy(movieRepository);
         movieExpected = new Movie();
-        movieExpected.setId(1);
-        movieExpected.setClientId(1);
+        movieExpected.setId(1L);
+        movieExpected.setClientId(1L);
         movieExpected.setTitle("TestMovie");
     }
 
@@ -89,9 +89,9 @@ class MovieRepositoryTest {
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.executeQuery()).thenReturn(resultSet);
-            when(spyRepository.findOne(1)).thenReturn(movieExpected);
+            when(spyRepository.findOne(1L)).thenReturn(movieExpected);
 
-            Movie movie = spyRepository.findOne(1);
+            Movie movie = spyRepository.findOne(1L);
 
             assertNotNull(movie);
             assertEquals(1, movie.getId());
@@ -155,11 +155,11 @@ class MovieRepositoryTest {
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
 
             Movie updatedMovie = new Movie();
-            updatedMovie.setId(1);
-            updatedMovie.setClientId(2);
+            updatedMovie.setId(1L);
+            updatedMovie.setClientId(2L);
             updatedMovie.setTitle("UpdatedTestMovie");
 
-            Movie result = movieRepository.update(1, updatedMovie);
+            Movie result = movieRepository.update(1L, updatedMovie);
 
             assertNotNull(result);
             assertEquals(1, result.getId());
@@ -186,7 +186,7 @@ class MovieRepositoryTest {
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.executeUpdate()).thenReturn(1);
 
-            boolean result = movieRepository.remove(1);
+            boolean result = movieRepository.remove(1L);
 
             assertTrue(result);
             verify(connection).prepareStatement(eq(removeMovieSql));

@@ -14,7 +14,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Movie {
-    private long id;
-    private long clientId;
+    private Long id;
+    private Long clientId;
     private String title;
 }

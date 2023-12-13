@@ -51,7 +51,7 @@ class ActorRepositoryTest {
         actorRepository = new ActorRepository(dbConnection);
         spyRepository = spy(actorRepository);
         actorExpected = new Actor();
-        actorExpected.setId(1);
+        actorExpected.setId(1L);
         actorExpected.setName("TestActor");
     }
 
@@ -86,9 +86,9 @@ class ActorRepositoryTest {
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
-            when(spyRepository.findOne(1)).thenReturn(actorExpected);
+            when(spyRepository.findOne(1L)).thenReturn(actorExpected);
 
-            Actor actor = spyRepository.findOne(1);
+            Actor actor = spyRepository.findOne(1L);
 
             assertNotNull(actor);
             assertEquals(1, actor.getId());
@@ -134,10 +134,10 @@ class ActorRepositoryTest {
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 
             Actor updatedActor = new Actor();
-            updatedActor.setId(1);
+            updatedActor.setId(1L);
             updatedActor.setName("UpdatedTestActor");
 
-            Actor result = actorRepository.update(1, updatedActor);
+            Actor result = actorRepository.update(1L, updatedActor);
 
             assertNotNull(result);
             assertEquals(1, result.getId());
@@ -162,7 +162,7 @@ class ActorRepositoryTest {
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeUpdate()).thenReturn(1);
 
-            boolean result = actorRepository.remove(1);
+            boolean result = actorRepository.remove(1L);
 
             assertTrue(result);
             verify(connection).prepareStatement(eq(removeActorSql));

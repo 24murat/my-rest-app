@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fatykhov.restapp.dto.ActorMovieDto;
 import com.fatykhov.restapp.dto.MovieDto;
 import com.fatykhov.restapp.service.MovieService;
+import com.fatykhov.restapp.util.ResponseUtils;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,144 +18,89 @@ import java.util.stream.Collectors;
 
 @WebServlet(name = "MovieServlet", value = "/movies/*")
 public class MovieServlet extends HttpServlet {
-    private static final String CONNECTION_TYPE = "application/json";
     private final MovieService service = new MovieService();
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType(CONNECTION_TYPE);
-
         String pathInfo = req.getPathInfo();
-        if (pathInfo == null) {
+        if (pathInfo == null || pathInfo.equals("/")) {
             List<MovieDto> allMoviesDto = service.getAll();
-            String json = mapper.writeValueAsString(allMoviesDto);
-            resp.setStatus(HttpServletResponse.SC_OK);
-            resp.getWriter().write(json);
+            ResponseUtils.sendJsonResponse(resp, HttpServletResponse.SC_OK, allMoviesDto);
         } else {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
             MovieDto movieDto = service.getById(id);
 
-            if (movieDto != null) {
-                String json = mapper.writeValueAsString(movieDto);
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(json);
-            } else {
-                Map<String, Object> errorMap = Map.of(
-                        "errorCode", HttpServletResponse.SC_NOT_FOUND,
-                        "errorMessage", String.format("Movie with id = %d is not found", id)
-                );
-                String jsonError = mapper.writeValueAsString(errorMap);
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                resp.getWriter().write(jsonError);
+            if (movieDto.getId() == null) {
+                ResponseUtils.sendNotFound(resp, id, "Movie");
+                return;
             }
+
+            ResponseUtils.sendJsonResponse(resp, HttpServletResponse.SC_OK, movieDto);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType(CONNECTION_TYPE);
-
         String pathInfo = req.getPathInfo();
-        if (pathInfo != null) {
-            Map<String, Object> errorMap = Map.of(
-                    "errorCode", HttpServletResponse.SC_BAD_REQUEST,
-                    "errorMessage", "Wrong path"
-            );
-            String jsonError = mapper.writeValueAsString(errorMap);
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(jsonError);
+        if (pathInfo != null && !pathInfo.equals("/")) {
+            ResponseUtils.sendBadRequest(resp, "Wrong path. To add new movie path should be empty");
         } else {
             BufferedReader br = req.getReader();
             ActorMovieDto actorMovieFromJson = mapper.readValue(readJson(br), ActorMovieDto.class);
-
             MovieDto movieDto = service.save(actorMovieFromJson.getMovieDto(), actorMovieFromJson.getActorsId());
 
-            String json = mapper.writeValueAsString(movieDto);
-            resp.setStatus(HttpServletResponse.SC_CREATED);
-            resp.getWriter().write(json);
+            ResponseUtils.sendJsonResponse(resp, HttpServletResponse.SC_CREATED, movieDto);
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType(CONNECTION_TYPE);
-
         String pathInfo = req.getPathInfo();
-        if (pathInfo == null) {
-            Map<String, Object> errorMap = Map.of(
-                    "errorCode", HttpServletResponse.SC_BAD_REQUEST,
-                    "errorMessage", "Wrong path"
-            );
-            String jsonError = mapper.writeValueAsString(errorMap);
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(jsonError);
+        if (pathInfo == null || pathInfo.equals("/")) {
+            ResponseUtils.sendBadRequest(resp, "Wrong path. To edit movies info provide id");
         } else {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
-
             MovieDto movieDtoCheck = service.getById(id);
 
-            if (movieDtoCheck != null) {
-                BufferedReader br = req.getReader();
-                MovieDto movieFromJson = mapper.readValue(readJson(br), MovieDto.class);
-
-                MovieDto movieDto = service.update(id, movieFromJson);
-
-                String json = mapper.writeValueAsString(movieDto);
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(json);
-            } else {
-                Map<String, Object> errorMap = Map.of(
-                        "errorCode", HttpServletResponse.SC_NOT_FOUND,
-                        "errorMessage", String.format("Movie with id = %d is not found", id)
-                );
-                String jsonError = mapper.writeValueAsString(errorMap);
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                resp.getWriter().write(jsonError);
+            if (movieDtoCheck.getId() == null) {
+                ResponseUtils.sendNotFound(resp, id, "Movie");
+                return;
             }
+
+            BufferedReader br = req.getReader();
+            MovieDto movieFromJson = mapper.readValue(readJson(br), MovieDto.class);
+            MovieDto movieDto = service.update(id, movieFromJson);
+
+            ResponseUtils.sendJsonResponse(resp, HttpServletResponse.SC_OK, movieDto);
         }
     }
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        resp.setContentType(CONNECTION_TYPE);
-
         String pathInfo = req.getPathInfo();
-        if (pathInfo == null) {
-            Map<String, Object> errorMap = Map.of(
-                    "errorCode", HttpServletResponse.SC_BAD_REQUEST,
-                    "errorMessage", "Wrong path"
-            );
-            String jsonError = mapper.writeValueAsString(errorMap);
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            resp.getWriter().write(jsonError);
+        if (pathInfo == null || pathInfo.equals("/")) {
+            ResponseUtils.sendBadRequest(resp, "Wrong path. To delete movie provide id");
         } else {
             String stringId = pathInfo.substring(1);
             long id = Long.parseLong(stringId);
-
             MovieDto movieDtoCheck = service.getById(id);
 
-            if (movieDtoCheck != null) {
-                boolean isDeleted = service.remove(id);
-
-                Map<String, Object> messageMap = Map.of(
-                        "status", HttpServletResponse.SC_OK,
-                        "message", String.format("Movie with id = %d remove status = %b", id, isDeleted)
-                );
-                String jsonMessage = mapper.writeValueAsString(messageMap);
-                resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().write(jsonMessage);
-            } else {
-                Map<String, Object> errorMap = Map.of(
-                        "errorCode", HttpServletResponse.SC_NOT_FOUND,
-                        "errorMessage", String.format("Movie with id = %d is not found", id)
-                );
-                String jsonError = mapper.writeValueAsString(errorMap);
-                resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                resp.getWriter().write(jsonError);
+            if (movieDtoCheck.getId() == null) {
+                ResponseUtils.sendNotFound(resp, id, "Movie");
+                return;
             }
+
+            boolean isDeleted = service.remove(id);
+
+            Map<String, Object> messageMap = Map.of(
+                    "status", HttpServletResponse.SC_OK,
+                    "message", String.format("Movie with id = %d delete status = %b", id, isDeleted)
+            );
+
+            ResponseUtils.sendJsonResponse(resp, HttpServletResponse.SC_OK, messageMap);
         }
     }
 

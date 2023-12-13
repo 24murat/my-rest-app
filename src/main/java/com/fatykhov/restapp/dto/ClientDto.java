@@ -14,6 +14,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ClientDto {
-    private long id;
+    private Long id;
     private String name;
 }

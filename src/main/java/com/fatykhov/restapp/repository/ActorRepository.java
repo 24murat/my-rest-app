@@ -50,7 +50,7 @@ public class ActorRepository implements ActorRepositoryInterface {
     }
 
     @Override
-    public Actor findOne(long id) {
+    public Actor findOne(Long id) {
         Actor actor = new Actor();
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ACTOR_BY_ID_SQL)) {
@@ -78,7 +78,7 @@ public class ActorRepository implements ActorRepositoryInterface {
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
 
             if (generatedKeys.next()) {
-                long actorId = generatedKeys.getLong(1);
+                Long actorId = generatedKeys.getLong(1);
                 actor.setId(actorId);
             } else {
                 throw new SQLException("Error of obtaining the generated key for Actor");
@@ -90,7 +90,7 @@ public class ActorRepository implements ActorRepositoryInterface {
     }
 
     @Override
-    public Actor update(long id, Actor updatedActor) {
+    public Actor update(Long id, Actor updatedActor) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_ACTOR_SQL)) {
 
@@ -105,7 +105,7 @@ public class ActorRepository implements ActorRepositoryInterface {
     }
 
     @Override
-    public boolean remove(long id) {
+    public boolean remove(Long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_ACTOR_SQL)) {
 

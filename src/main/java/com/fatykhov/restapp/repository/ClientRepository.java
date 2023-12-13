@@ -50,7 +50,7 @@ public class ClientRepository implements ClientRepositoryInterface {
     }
 
     @Override
-    public Client findOne(long id) {
+    public Client findOne(Long id) {
         Client client = new Client();
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BY_ID_SQL)) {
@@ -77,7 +77,7 @@ public class ClientRepository implements ClientRepositoryInterface {
 
             ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
             if (generatedKeys.next()) {
-                long clientId = generatedKeys.getLong(1);
+                Long clientId = generatedKeys.getLong(1);
                 client.setId(clientId);
             } else {
                 throw new SQLException("Error of obtaining the generated key for Client");
@@ -90,7 +90,7 @@ public class ClientRepository implements ClientRepositoryInterface {
     }
 
     @Override
-    public Client update(long id, Client updatedClient) {
+    public Client update(Long id, Client updatedClient) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT_SQL)) {
 
@@ -106,7 +106,7 @@ public class ClientRepository implements ClientRepositoryInterface {
     }
 
     @Override
-    public boolean remove(long id) {
+    public boolean remove(Long id) {
         try (Connection connection = dbConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_CLIENT_SQL)) {
 

@@ -43,12 +43,12 @@ public class ClientServiceTest {
         spyService = spy(clientService);
 
         expectedClientDto = ClientDto.builder()
-                .id(1)
+                .id(1L)
                 .name("TestClient")
                 .build();
 
         expectedClient = Client.builder()
-                .id(1)
+                .id(1L)
                 .name("TestClient")
                 .build();
     }

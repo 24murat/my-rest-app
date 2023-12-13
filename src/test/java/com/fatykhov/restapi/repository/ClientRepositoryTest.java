@@ -51,7 +51,7 @@ class ClientRepositoryTest {
         clientRepository = new ClientRepository(dbConnection);
         spyRepository = spy(clientRepository);
         clientExpected = new Client();
-        clientExpected.setId(1);
+        clientExpected.setId(1L);
         clientExpected.setName("TestClient");
     }
 
@@ -86,9 +86,9 @@ class ClientRepositoryTest {
             when(dbConnection.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
-            when(spyRepository.findOne(1)).thenReturn(clientExpected);
+            when(spyRepository.findOne(1L)).thenReturn(clientExpected);
 
-            Client client = spyRepository.findOne(1);
+            Client client = spyRepository.findOne(1L);
 
             assertNotNull(client);
             assertEquals(1, client.getId());
@@ -134,10 +134,10 @@ class ClientRepositoryTest {
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 
             Client updatedClient = new Client();
-            updatedClient.setId(1);
+            updatedClient.setId(1L);
             updatedClient.setName("UpdatedTestClient");
 
-            Client result = clientRepository.update(1, updatedClient);
+            Client result = clientRepository.update(1L, updatedClient);
 
             assertNotNull(result);
             assertEquals(1, result.getId());
@@ -162,7 +162,7 @@ class ClientRepositoryTest {
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeUpdate()).thenReturn(1);
 
-            boolean result = clientRepository.remove(1);
+            boolean result = clientRepository.remove(1L);
 
             assertTrue(result);
             verify(connection).prepareStatement(eq(removeClientSql));
