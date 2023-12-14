@@ -1,6 +1,6 @@
 package com.fatykhov.restapi.repository;
 
-import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
+import com.fatykhov.restapp.dbConfig.ConnectionPool;
 import com.fatykhov.restapp.entity.Actor;
 import com.fatykhov.restapp.repository.impl.ActorRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 class ActorRepositoryImplTest {
 
     @Mock
-    private DbConnection dbConnection;
+    private ConnectionPool connectionPool;
     @Mock
     private Connection connection;
     @Mock
@@ -48,7 +48,7 @@ class ActorRepositoryImplTest {
 
     @BeforeEach
     void setup() {
-        actorRepositoryImpl = new ActorRepositoryImpl(dbConnection);
+        actorRepositoryImpl = new ActorRepositoryImpl(connectionPool);
         spyRepository = spy(actorRepositoryImpl);
         actorExpected = new Actor();
         actorExpected.setId(1L);
@@ -62,7 +62,7 @@ class ActorRepositoryImplTest {
             sqlField.setAccessible(true);
             String getAllActorsSql = (String) sqlField.get(actorRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
@@ -83,7 +83,7 @@ class ActorRepositoryImplTest {
             sqlField.setAccessible(true);
             String getActorByIdSql = (String) sqlField.get(actorRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(spyRepository.findOne(1L)).thenReturn(actorExpected);
@@ -106,7 +106,7 @@ class ActorRepositoryImplTest {
             sqlField.setAccessible(true);
             String saveActorSql = (String) sqlField.get(actorRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
                     .thenReturn(preparedStatement);
             when(preparedStatement.getGeneratedKeys()).thenReturn(resultSet);
@@ -130,7 +130,7 @@ class ActorRepositoryImplTest {
             sqlField.setAccessible(true);
             String updateActorSql = (String) sqlField.get(actorRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 
             Actor updatedActor = new Actor();
@@ -158,7 +158,7 @@ class ActorRepositoryImplTest {
             sqlField.setAccessible(true);
             String removeActorSql = (String) sqlField.get(actorRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeUpdate()).thenReturn(1);
 

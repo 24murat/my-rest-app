@@ -1,6 +1,6 @@
 package com.fatykhov.restapp.repository.impl;
 
-import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
+import com.fatykhov.restapp.dbConfig.ConnectionPool;
 import com.fatykhov.restapp.entity.Movie;
 import com.fatykhov.restapp.repository.MovieRepository;
 
@@ -20,20 +20,20 @@ public class MovieRepositoryImpl implements MovieRepository {
     private static final String UPDATE_MOVIE_SQL = "UPDATE Movie SET client_id=?, title=? WHERE id=?";
     private static final String REMOVE_MOVIE_SQL = "DELETE FROM Movie WHERE id=?";
 
-    private final DbConnection dbConnection;
+    private final ConnectionPool connectionPool;
 
     public MovieRepositoryImpl() {
-        dbConnection = new DbConnection();
+        connectionPool = new ConnectionPool();
     }
 
-    public MovieRepositoryImpl(DbConnection dbConnection) {
-        this.dbConnection = dbConnection;
+    public MovieRepositoryImpl(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
     }
 
     @Override
     public List<Movie> findAll() {
         List<Movie> movieList = new ArrayList<>();
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_MOVIES_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -54,7 +54,7 @@ public class MovieRepositoryImpl implements MovieRepository {
     @Override
     public Movie findOne(Long id) {
         Movie movie = new Movie();
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_MOVIE_BY_ID_SQL)) {
 
             preparedStatement.setLong(1, id);
@@ -72,7 +72,7 @@ public class MovieRepositoryImpl implements MovieRepository {
     }
 
     public Movie save(Movie movie, List<Long> actorsId) {
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatementMovie = connection.prepareStatement(SAVE_MOVIE_SQL, Statement.RETURN_GENERATED_KEYS);
              PreparedStatement preparedStatementActorMovie = connection.prepareStatement(SAVE_ACTOR_MOVIE_SQL)) {
 
@@ -103,7 +103,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public Movie update(Long id, Movie updatedMovie) {
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_MOVIE_SQL)) {
 
             preparedStatement.setLong(1, updatedMovie.getClientId());
@@ -119,7 +119,7 @@ public class MovieRepositoryImpl implements MovieRepository {
 
     @Override
     public boolean remove(Long id) {
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_MOVIE_SQL)) {
 
             preparedStatement.setLong(1, id);

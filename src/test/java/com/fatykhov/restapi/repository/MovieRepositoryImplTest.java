@@ -1,6 +1,6 @@
 package com.fatykhov.restapi.repository;
 
-import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
+import com.fatykhov.restapp.dbConfig.ConnectionPool;
 import com.fatykhov.restapp.entity.Movie;
 import com.fatykhov.restapp.repository.impl.MovieRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 class MovieRepositoryImplTest {
 
     @Mock
-    private DbConnection dbConnection;
+    private ConnectionPool connectionPool;
     @Mock
     private Connection connection;
     @Mock
@@ -50,7 +50,7 @@ class MovieRepositoryImplTest {
 
     @BeforeEach
     void setup() {
-        movieRepositoryImpl = new MovieRepositoryImpl(dbConnection);
+        movieRepositoryImpl = new MovieRepositoryImpl(connectionPool);
         spyRepository = spy(movieRepositoryImpl);
         movieExpected = new Movie();
         movieExpected.setId(1L);
@@ -65,7 +65,7 @@ class MovieRepositoryImplTest {
             sqlField.setAccessible(true);
             String getAllMoviesSql = (String) sqlField.get(movieRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.executeQuery()).thenReturn(resultSet);
 
@@ -86,7 +86,7 @@ class MovieRepositoryImplTest {
             sqlField.setAccessible(true);
             String getMovieByIdSql = (String) sqlField.get(movieRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.executeQuery()).thenReturn(resultSet);
             when(spyRepository.findOne(1L)).thenReturn(movieExpected);
@@ -114,7 +114,7 @@ class MovieRepositoryImplTest {
             sqlFieldActorMovie.setAccessible(true);
             String saveActorMovieSql = (String) sqlFieldActorMovie.get(movieRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(eq(saveMovieSql), eq(Statement.RETURN_GENERATED_KEYS)))
                     .thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.getGeneratedKeys()).thenReturn(resultSet);
@@ -151,7 +151,7 @@ class MovieRepositoryImplTest {
             sqlField.setAccessible(true);
             String updateMovieSql = (String) sqlField.get(movieRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
 
             Movie updatedMovie = new Movie();
@@ -182,7 +182,7 @@ class MovieRepositoryImplTest {
             sqlField.setAccessible(true);
             String removeMovieSql = (String) sqlField.get(movieRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatementMovie);
             when(preparedStatementMovie.executeUpdate()).thenReturn(1);
 

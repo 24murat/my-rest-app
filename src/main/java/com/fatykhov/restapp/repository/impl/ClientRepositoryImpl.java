@@ -1,6 +1,6 @@
 package com.fatykhov.restapp.repository.impl;
 
-import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
+import com.fatykhov.restapp.dbConfig.ConnectionPool;
 import com.fatykhov.restapp.entity.Client;
 import com.fatykhov.restapp.repository.ClientRepository;
 
@@ -19,20 +19,20 @@ public class ClientRepositoryImpl implements ClientRepository {
     private static final String UPDATE_CLIENT_SQL = "UPDATE Client SET name=? WHERE id=?";
     private static final String REMOVE_CLIENT_SQL = "DELETE FROM Client WHERE id=?";
 
-    private final DbConnection dbConnection;
+    private final ConnectionPool connectionPool;
 
     public ClientRepositoryImpl() {
-        dbConnection = new DbConnection();
+        connectionPool = new ConnectionPool();
     }
 
-    public ClientRepositoryImpl(DbConnection dbConnection) {
-        this.dbConnection = dbConnection;
+    public ClientRepositoryImpl(ConnectionPool connectionPool) {
+        this.connectionPool = connectionPool;
     }
 
     @Override
     public List<Client> findAll() {
         List<Client> clientList = new ArrayList<>();
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_ALL_CLIENTS_SQL)) {
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -52,7 +52,7 @@ public class ClientRepositoryImpl implements ClientRepository {
     @Override
     public Client findOne(Long id) {
         Client client = new Client();
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_CLIENT_BY_ID_SQL)) {
 
             preparedStatement.setLong(1, id);
@@ -69,7 +69,7 @@ public class ClientRepositoryImpl implements ClientRepository {
     }
 
     public Client save(Client client) {
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_CLIENT_SQL, Statement.RETURN_GENERATED_KEYS)) {
 
             preparedStatement.setString(1, client.getName());
@@ -91,7 +91,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public Client update(Long id, Client updatedClient) {
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CLIENT_SQL)) {
 
             preparedStatement.setString(1, updatedClient.getName());
@@ -107,7 +107,7 @@ public class ClientRepositoryImpl implements ClientRepository {
 
     @Override
     public boolean remove(Long id) {
-        try (Connection connection = dbConnection.getConnection();
+        try (Connection connection = connectionPool.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(REMOVE_CLIENT_SQL)) {
 
             preparedStatement.setLong(1, id);

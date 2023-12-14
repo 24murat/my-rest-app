@@ -1,6 +1,6 @@
 package com.fatykhov.restapi.repository;
 
-import com.fatykhov.restapp.dbConfigAndConnection.DbConnection;
+import com.fatykhov.restapp.dbConfig.ConnectionPool;
 import com.fatykhov.restapp.entity.Client;
 import com.fatykhov.restapp.repository.impl.ClientRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 class ClientRepositoryImplTest {
 
     @Mock
-    private DbConnection dbConnection;
+    private ConnectionPool connectionPool;
     @Mock
     private Connection connection;
     @Mock
@@ -48,7 +48,7 @@ class ClientRepositoryImplTest {
 
     @BeforeEach
     void setup() {
-        clientRepositoryImpl = new ClientRepositoryImpl(dbConnection);
+        clientRepositoryImpl = new ClientRepositoryImpl(connectionPool);
         spyRepository = spy(clientRepositoryImpl);
         clientExpected = new Client();
         clientExpected.setId(1L);
@@ -62,7 +62,7 @@ class ClientRepositoryImplTest {
             sqlField.setAccessible(true);
             String getAllClientsSql = (String) sqlField.get(clientRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
 
@@ -83,7 +83,7 @@ class ClientRepositoryImplTest {
             sqlField.setAccessible(true);
             String getClientByIdSql = (String) sqlField.get(clientRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeQuery()).thenReturn(resultSet);
             when(spyRepository.findOne(1L)).thenReturn(clientExpected);
@@ -106,7 +106,7 @@ class ClientRepositoryImplTest {
             sqlField.setAccessible(true);
             String saveClientSql = (String) sqlField.get(clientRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString(), eq(Statement.RETURN_GENERATED_KEYS)))
                     .thenReturn(preparedStatement);
             when(preparedStatement.getGeneratedKeys()).thenReturn(resultSet);
@@ -130,7 +130,7 @@ class ClientRepositoryImplTest {
             sqlField.setAccessible(true);
             String updateClientSql = (String) sqlField.get(clientRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
 
             Client updatedClient = new Client();
@@ -158,7 +158,7 @@ class ClientRepositoryImplTest {
             sqlField.setAccessible(true);
             String removeClientSql = (String) sqlField.get(clientRepositoryImpl);
 
-            when(dbConnection.getConnection()).thenReturn(connection);
+            when(connectionPool.getConnection()).thenReturn(connection);
             when(connection.prepareStatement(anyString())).thenReturn(preparedStatement);
             when(preparedStatement.executeUpdate()).thenReturn(1);
 
