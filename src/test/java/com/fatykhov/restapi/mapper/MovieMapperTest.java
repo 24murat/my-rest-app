@@ -1,5 +1,6 @@
 package com.fatykhov.restapi.mapper;
 
+import com.fatykhov.restapi.util.TestObjectInitializer;
 import com.fatykhov.restapp.dto.MovieDto;
 import com.fatykhov.restapp.entity.Movie;
 import com.fatykhov.restapp.mapper.MovieMapper;
@@ -23,17 +24,8 @@ public class MovieMapperTest {
 
     @BeforeEach
     void setUp() {
-        expectedMovieDto = MovieDto.builder()
-                .id(1L)
-                .clientId(2L)
-                .title("TestMovie")
-                .build();
-
-        expectedMovie = Movie.builder()
-                .id(1L)
-                .clientId(2L)
-                .title("TestMovie")
-                .build();
+        expectedMovieDto = TestObjectInitializer.initializeMovieDto();
+        expectedMovie = TestObjectInitializer.initializeMovie();
     }
 
     @Test

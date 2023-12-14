@@ -1,5 +1,6 @@
 package com.fatykhov.restapi.service;
 
+import com.fatykhov.restapi.util.TestObjectInitializer;
 import com.fatykhov.restapp.dto.ActorDto;
 import com.fatykhov.restapp.entity.Actor;
 import com.fatykhov.restapp.mapper.ActorMapper;
@@ -44,15 +45,8 @@ public class ActorServiceImplTest {
         actorServiceImpl = new ActorServiceImpl(actorRepositoryImpl, actorMapper);
         spyService = spy(actorServiceImpl);
 
-        expectedActorDto = ActorDto.builder()
-                .id(1L)
-                .name("TestActor")
-                .build();
-
-        expectedActor = Actor.builder()
-                .id(1L)
-                .name("TestActor")
-                .build();
+        expectedActorDto = TestObjectInitializer.initializeActorDto();
+        expectedActor = TestObjectInitializer.initializeActor();
     }
 
     @Test

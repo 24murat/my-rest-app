@@ -1,5 +1,6 @@
 package com.fatykhov.restapi.mapper;
 
+import com.fatykhov.restapi.util.TestObjectInitializer;
 import com.fatykhov.restapp.dto.ActorDto;
 import com.fatykhov.restapp.entity.Actor;
 import com.fatykhov.restapp.mapper.ActorMapper;
@@ -23,15 +24,8 @@ public class ActorMapperTest {
 
     @BeforeEach
     void setUp() {
-        expectedActorDto = ActorDto.builder()
-                .id(1L)
-                .name("TestActor")
-                .build();
-
-        expectedActor = Actor.builder()
-                .id(1L)
-                .name("TestActor")
-                .build();
+        expectedActorDto = TestObjectInitializer.initializeActorDto();
+        expectedActor = TestObjectInitializer.initializeActor();
     }
 
     @Test

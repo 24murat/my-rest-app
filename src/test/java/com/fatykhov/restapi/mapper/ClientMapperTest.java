@@ -1,5 +1,6 @@
 package com.fatykhov.restapi.mapper;
 
+import com.fatykhov.restapi.util.TestObjectInitializer;
 import com.fatykhov.restapp.dto.ClientDto;
 import com.fatykhov.restapp.entity.Client;
 import com.fatykhov.restapp.mapper.ClientMapper;
@@ -23,15 +24,8 @@ public class ClientMapperTest {
 
     @BeforeEach
     void setUp() {
-        expectedClientDto = ClientDto.builder()
-                .id(1L)
-                .name("TestClient")
-                .build();
-
-        expectedClient = Client.builder()
-                .id(1L)
-                .name("TestClient")
-                .build();
+        expectedClientDto = TestObjectInitializer.initializeClientDto();
+        expectedClient = TestObjectInitializer.initializeClient();
     }
 
     @Test

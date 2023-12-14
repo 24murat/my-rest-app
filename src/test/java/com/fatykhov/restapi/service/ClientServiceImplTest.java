@@ -1,5 +1,6 @@
 package com.fatykhov.restapi.service;
 
+import com.fatykhov.restapi.util.TestObjectInitializer;
 import com.fatykhov.restapp.dto.ClientDto;
 import com.fatykhov.restapp.entity.Client;
 import com.fatykhov.restapp.mapper.ClientMapper;
@@ -42,15 +43,8 @@ public class ClientServiceImplTest {
         clientServiceImpl = new ClientServiceImpl(clientRepositoryImpl, clientMapper);
         spyService = spy(clientServiceImpl);
 
-        expectedClientDto = ClientDto.builder()
-                .id(1L)
-                .name("TestClient")
-                .build();
-
-        expectedClient = Client.builder()
-                .id(1L)
-                .name("TestClient")
-                .build();
+        expectedClientDto = TestObjectInitializer.initializeClientDto();
+        expectedClient = TestObjectInitializer.initializeClient();
     }
 
     @ParameterizedTest
